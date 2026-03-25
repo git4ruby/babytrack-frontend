@@ -66,10 +66,35 @@ function isActive(path) {
       </router-link>
     </nav>
 
-    <!-- Baby age -->
-    <div v-if="babyStore.baby" class="px-5 py-4 border-t border-white/10">
-      <p class="text-xs text-slate-500">Age</p>
-      <p class="text-sm font-medium text-slate-300">{{ babyStore.baby.age_in_weeks }} weeks · {{ babyStore.baby.age_in_days }} days</p>
+    <!-- Baby selector -->
+    <div class="px-3 py-4 border-t border-white/10">
+      <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-3 mb-2">Current Baby</p>
+      <div class="space-y-1">
+        <button
+          v-for="b in babyStore.babies"
+          :key="b.id"
+          @click="babyStore.switchBaby(b.id)"
+          :class="[
+            'w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-all text-sm',
+            babyStore.baby?.id === b.id
+              ? 'bg-white/10 text-white'
+              : 'text-slate-400 hover:bg-white/5 hover:text-slate-300'
+          ]"
+        >
+          <span class="text-lg">{{ b.gender === 'female' ? '👧' : '👶' }}</span>
+          <div class="min-w-0 flex-1">
+            <p class="font-medium truncate">{{ b.name }}</p>
+            <p class="text-[10px] text-slate-500">{{ b.age_in_weeks }}w · {{ b.age_in_days }}d</p>
+          </div>
+          <span v-if="babyStore.baby?.id === b.id" class="w-2 h-2 rounded-full bg-sky-400"></span>
+        </button>
+      </div>
+      <router-link
+        to="/setup"
+        class="flex items-center gap-2 px-3 py-2 mt-1 text-xs font-medium text-slate-500 hover:text-slate-300 rounded-lg hover:bg-white/5 transition"
+      >
+        <span class="text-base">+</span> Add Baby
+      </router-link>
     </div>
   </aside>
 </template>

@@ -8,12 +8,22 @@ const client = axios.create({
   },
 })
 
-// Request interceptor: attach JWT
+// Request interceptor: attach JWT + baby_id
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('bt_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  // Attach current baby_id to all requests
+  const babyId = localStorage.getItem('bt_baby_id')
+  if (babyId) {
+    config.params = config.params || {}
+    if (!config.params.baby_id) {
+      config.params.baby_id = babyId
+    }
+  }
+
   return config
 })
 

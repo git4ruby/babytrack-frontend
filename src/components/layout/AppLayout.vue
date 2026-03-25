@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useBabyStore } from '@/stores/baby'
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
@@ -9,10 +10,16 @@ import FeedEntryModal from '@/components/FeedEntryModal.vue'
 import MilkStashModal from '@/components/MilkStashModal.vue'
 import DiaperEntryModal from '@/components/DiaperEntryModal.vue'
 
+const router = useRouter()
 const babyStore = useBabyStore()
 
-onMounted(() => {
-  babyStore.fetchBaby()
+onMounted(async () => {
+  await babyStore.fetchBaby()
+  await babyStore.fetchBabies()
+  // Redirect to setup if user has no babies
+  if (!babyStore.hasBaby) {
+    router.replace('/setup')
+  }
 })
 </script>
 
