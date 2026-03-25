@@ -11,26 +11,62 @@ import { PlusIcon } from '@heroicons/vue/24/outline'
 const feedingsStore = useFeedingsStore()
 const ui = useUiStore()
 
-const selectedDate = ref(dayjs().format('YYYY-MM-DD'))
+// Date range
+const rangePreset = ref('7d')
+const customFrom = ref(dayjs().subtract(7, 'day').format('YYYY-MM-DD'))
+const customTo = ref(dayjs().format('YYYY-MM-DD'))
 const selectedType = ref('')
 const page = ref(1)
 
-const typeFilters = [
-  { value: '', label: 'All' },
-  { value: 'bottle', label: '🍼 Bottle' },
-  { value: 'breastfeed', label: '🤱 Breast' },
-  { value: 'pump', label: '⚙️ Pump' },
+const rangePresets = [
+  { value: 'today', label: 'Today' },
+  { value: '3d', label: '3 Days' },
+  { value: '7d', label: '7 Days' },
+  { value: '14d', label: '14 Days' },
+  { value: '30d', label: '30 Days' },
+  { value: 'custom', label: 'Custom' },
 ]
 
-// Group feedings by date
-const groupedFeedings = computed(() => {
+const typeFilters = [
+  { value: '', label: 'All', icon: '' },
+  { value: 'bottle', label: 'Bottle', icon: '🍼' },
+  { value: 'breastfeed', label: 'Breast', icon: '🤱' },
+  { value: 'pump', label: 'Pump', icon: '⚙️' },
+]
+
+const dateRange = computed(() => {
+  const today = dayjs()
+  switch (rangePreset.value) {
+    case 'today': return { from: today.format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case '3d': return { from: today.subtract(2, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case '7d': return { from: today.subtract(6, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case '14d': return { from: today.subtract(13, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case '30d': return { from: today.subtract(29, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case 'custom': return { from: customFrom.value, to: customTo.value }
+    default: return { from: today.subtract(6, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+  }
+})
+
+// Group feedings by date (sorted newest first)
+const sortedDates = computed(() => {
   const groups = {}
   for (const feed of feedingsStore.feedings) {
     const date = dayjs(feed.started_at).format('YYYY-MM-DD')
     if (!groups[date]) groups[date] = []
     groups[date].push(feed)
   }
-  return groups
+  return Object.entries(groups).sort((a, b) => b[0].localeCompare(a[0]))
+})
+
+const totalStats = computed(() => {
+  const feeds = feedingsStore.feedings
+  return {
+    count: feeds.length,
+    ml: feeds.reduce((s, f) => s + (f.volume_ml || 0), 0),
+    bottles: feeds.filter(f => f.feed_type === 'bottle').length,
+    breastfeeds: feeds.filter(f => f.feed_type === 'breastfeed').length,
+    pumps: feeds.filter(f => f.feed_type === 'pump').length,
+  }
 })
 
 function dateLabel(date) {
@@ -45,8 +81,12 @@ function dayTotal(feeds) {
   return feeds.reduce((sum, f) => sum + (f.volume_ml || 0), 0)
 }
 
+function dayBreastMin(feeds) {
+  return feeds.filter(f => f.feed_type === 'breastfeed').reduce((s, f) => s + (f.duration_minutes || 0), 0)
+}
+
 async function loadFeedings() {
-  const params = { date: selectedDate.value, page: page.value }
+  const params = { from: dateRange.value.from, to: dateRange.value.to, page: page.value, per_page: 100 }
   if (selectedType.value) params.feed_type = selectedType.value
   await feedingsStore.fetchFeedings(params)
 }
@@ -57,11 +97,7 @@ async function handleDelete(id) {
   ui.showToast('Feeding deleted')
 }
 
-function changeDate(offset) {
-  selectedDate.value = dayjs(selectedDate.value).add(offset, 'day').format('YYYY-MM-DD')
-}
-
-watch([selectedDate, selectedType], () => {
+watch([dateRange, selectedType], () => {
   page.value = 1
   loadFeedings()
 })
@@ -70,7 +106,7 @@ onMounted(loadFeedings)
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 max-w-4xl">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900">Feed Log</h1>
@@ -80,54 +116,74 @@ onMounted(loadFeedings)
       </BaseButton>
     </div>
 
-    <!-- Date nav -->
-    <div class="flex items-center justify-between bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-      <button @click="changeDate(-1)" class="px-3 py-1 text-sm text-gray-600 hover:text-blue-600 font-medium">← Prev</button>
-      <input
-        v-model="selectedDate"
-        type="date"
-        class="text-sm font-medium text-gray-900 border-none bg-transparent text-center focus:outline-none cursor-pointer"
-      />
-      <button
-        @click="changeDate(1)"
-        :disabled="selectedDate >= dayjs().format('YYYY-MM-DD')"
-        class="px-3 py-1 text-sm text-gray-600 hover:text-blue-600 font-medium disabled:text-gray-300"
-      >
-        Next →
-      </button>
+    <!-- Date Range Selector -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="preset in rangePresets"
+          :key="preset.value"
+          @click="rangePreset = preset.value"
+          :class="[
+            'px-3 py-1.5 text-sm font-medium rounded-lg transition-all',
+            rangePreset === preset.value
+              ? 'bg-slate-900 text-white shadow-md'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          ]"
+        >
+          {{ preset.label }}
+        </button>
+      </div>
+      <!-- Custom date inputs -->
+      <div v-if="rangePreset === 'custom'" class="flex items-center gap-3 mt-3">
+        <input v-model="customFrom" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+        <span class="text-gray-400 text-sm">to</span>
+        <input v-model="customTo" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+      </div>
     </div>
 
-    <!-- Type filters -->
-    <div class="flex gap-2 overflow-x-auto pb-1">
-      <button
-        v-for="filter in typeFilters"
-        :key="filter.value"
-        @click="selectedType = filter.value"
-        :class="[
-          'px-3 py-1.5 text-sm font-medium rounded-full whitespace-nowrap transition',
-          selectedType === filter.value
-            ? 'bg-blue-600 text-white'
-            : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300'
-        ]"
-      >
-        {{ filter.label }}
-      </button>
+    <!-- Filters + Summary Bar -->
+    <div class="flex items-center justify-between gap-4 flex-wrap">
+      <!-- Type filters -->
+      <div class="flex gap-1.5">
+        <button
+          v-for="filter in typeFilters"
+          :key="filter.value"
+          @click="selectedType = filter.value"
+          :class="[
+            'px-3 py-1.5 text-xs font-semibold rounded-full transition-all',
+            selectedType === filter.value
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+              : 'bg-white text-gray-500 border border-gray-200 hover:border-blue-300 hover:text-blue-600'
+          ]"
+        >
+          <span v-if="filter.icon">{{ filter.icon }} </span>{{ filter.label }}
+        </button>
+      </div>
+
+      <!-- Range summary -->
+      <div v-if="!feedingsStore.loading && feedingsStore.feedings.length" class="flex items-center gap-3 text-xs text-gray-500">
+        <span class="font-semibold text-gray-700">{{ totalStats.count }} feeds</span>
+        <span>{{ totalStats.ml }}ml total</span>
+        <span class="hidden sm:inline">🍼{{ totalStats.bottles }} 🤱{{ totalStats.breastfeeds }} ⚙️{{ totalStats.pumps }}</span>
+      </div>
     </div>
 
     <!-- Loading -->
-    <div v-if="feedingsStore.loading" class="text-center py-12">
+    <div v-if="feedingsStore.loading" class="text-center py-16">
       <div class="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+      <p class="text-sm text-gray-400 mt-3">Loading feeds...</p>
     </div>
 
     <!-- Feed list grouped by date -->
-    <template v-else-if="feedingsStore.feedings.length > 0">
-      <div v-for="(feeds, date) in groupedFeedings" :key="date" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <template v-else-if="sortedDates.length > 0">
+      <div v-for="[date, feeds] in sortedDates" :key="date" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <!-- Day header -->
-        <div class="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100">
-          <span class="text-sm font-semibold text-gray-700">{{ dateLabel(date) }}</span>
-          <div class="flex items-center gap-3 text-xs text-gray-500">
-            <span>{{ feeds.length }} feeds</span>
-            <span v-if="dayTotal(feeds) > 0" class="font-medium text-gray-700">{{ dayTotal(feeds) }}ml</span>
+        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
+          <span class="text-sm font-bold text-gray-800">{{ dateLabel(date) }}</span>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-gray-500">{{ feeds.length }} feeds</span>
+            <span v-if="dayTotal(feeds)" class="font-bold text-blue-600">{{ dayTotal(feeds) }}ml</span>
+            <span v-if="dayBreastMin(feeds)" class="font-medium text-pink-600">{{ dayBreastMin(feeds) }}min 🤱</span>
           </div>
         </div>
 
@@ -143,15 +199,15 @@ onMounted(loadFeedings)
       </div>
 
       <!-- Pagination -->
-      <div v-if="feedingsStore.meta.total_pages > 1" class="flex justify-center items-center gap-2 pt-2">
+      <div v-if="feedingsStore.meta.total_pages > 1" class="flex justify-center items-center gap-3 py-4">
         <BaseButton variant="secondary" size="sm" :disabled="page <= 1" @click="page--; loadFeedings()">Previous</BaseButton>
-        <span class="text-sm text-gray-500 px-2">Page {{ feedingsStore.meta.current_page }} of {{ feedingsStore.meta.total_pages }}</span>
+        <span class="text-sm text-gray-400">{{ feedingsStore.meta.current_page }} / {{ feedingsStore.meta.total_pages }}</span>
         <BaseButton variant="secondary" size="sm" :disabled="page >= feedingsStore.meta.total_pages" @click="page++; loadFeedings()">Next</BaseButton>
       </div>
     </template>
 
     <!-- Empty state -->
-    <EmptyState v-else icon="🍼" title="No feedings yet" description="Log your first feeding to start tracking.">
+    <EmptyState v-else icon="🍼" title="No feedings found" description="No feeds in this date range. Try a different range or log a new feed.">
       <BaseButton @click="ui.feedModalOpen = true">
         <PlusIcon class="w-4 h-4" />
         Log Feed

@@ -10,9 +10,9 @@ const props = defineProps({
 const emit = defineEmits(['delete'])
 
 const typeConfig = {
-  bottle: { icon: '🍼', color: 'blue', label: 'Bottle' },
-  breastfeed: { icon: '🤱', color: 'pink', label: 'Breastfeed' },
-  pump: { icon: '⚙️', color: 'purple', label: 'Pump' },
+  bottle: { icon: '🍼', bg: 'bg-blue-50', border: 'border-blue-100', label: 'Bottle', accent: 'text-blue-700' },
+  breastfeed: { icon: '🤱', bg: 'bg-pink-50', border: 'border-pink-100', label: 'Breastfeed', accent: 'text-pink-700' },
+  pump: { icon: '⚙️', bg: 'bg-purple-50', border: 'border-purple-100', label: 'Pump', accent: 'text-purple-700' },
 }
 
 const config = computed(() => typeConfig[props.feeding.feed_type] || typeConfig.bottle)
@@ -34,38 +34,48 @@ const detail = computed(() => {
   }
   return ''
 })
+
+const volumeBadge = computed(() => {
+  const f = props.feeding
+  if (f.volume_ml) return `${f.volume_ml}ml`
+  if (f.duration_minutes) return `${f.duration_minutes}m`
+  return null
+})
 </script>
 
 <template>
-  <div class="flex items-start gap-3 py-3 group">
-    <!-- Type icon -->
-    <div :class="[
-      'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg',
-      `bg-${config.color}-50`
-    ]">
+  <div class="flex items-center gap-3 py-3 group">
+    <!-- Type icon circle -->
+    <div :class="['flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl border', config.bg, config.border]">
       {{ config.icon }}
     </div>
 
     <!-- Content -->
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-gray-900">{{ config.label }}</span>
-        <span v-if="feeding.session_group" class="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">combo</span>
+        <span :class="['text-sm font-semibold', config.accent]">{{ config.label }}</span>
+        <span v-if="feeding.session_group" class="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-md font-bold uppercase tracking-wide">combo</span>
+        <span v-if="feeding.milk_type === 'formula'" class="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded-md font-bold uppercase tracking-wide">formula</span>
       </div>
-      <p class="text-sm text-gray-600 mt-0.5">{{ detail }}</p>
+      <p class="text-sm text-gray-500 mt-0.5 capitalize">{{ detail }}</p>
       <p v-if="feeding.notes" class="text-xs text-gray-400 mt-0.5 italic">{{ feeding.notes }}</p>
     </div>
 
-    <!-- Time + actions -->
-    <div class="flex-shrink-0 text-right">
-      <p class="text-sm font-medium text-gray-500">{{ time }}</p>
-      <button
-        @click="emit('delete', feeding.id)"
-        class="mt-1 p-1 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"
-        title="Delete"
-      >
-        <TrashIcon class="w-4 h-4" />
-      </button>
+    <!-- Right: volume badge + time + delete -->
+    <div class="flex-shrink-0 flex items-center gap-3">
+      <span v-if="volumeBadge" :class="['text-sm font-bold px-2.5 py-1 rounded-lg', config.bg, config.accent]">
+        {{ volumeBadge }}
+      </span>
+      <div class="text-right">
+        <p class="text-xs font-medium text-gray-400">{{ time }}</p>
+        <button
+          @click="emit('delete', feeding.id)"
+          class="mt-0.5 p-0.5 text-gray-200 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"
+          title="Delete"
+        >
+          <TrashIcon class="w-3.5 h-3.5" />
+        </button>
+      </div>
     </div>
   </div>
 </template>
