@@ -31,22 +31,26 @@ src/
   api/          — Axios client + endpoint modules (auth, feedings, milkStashes, etc.)
   components/
     layout/     — AppLayout, AppSidebar, AppHeader, AppBottomNav
-    ui/         — ToastContainer, shared UI components
+    ui/         — BaseModal, BaseButton, EmptyState, ToastContainer
   composables/  — useTimeSince (gap timer)
   router/       — Route definitions with auth guards
   stores/       — Pinia stores (auth, baby, feedings, milk, ui)
-  views/        — Page components (Dashboard, Feedings, MilkStorage, etc.)
+  views/        — Page components
 ```
 
 ## Pages
 
-| Route | View | Status |
-|-------|------|--------|
-| `/login` | Login | Working |
-| `/` | Dashboard | Working (gap timer, summary, milk inventory) |
-| `/feedings` | Feed Log | Placeholder |
-| `/analytics` | Analytics | Placeholder |
-| `/milk-storage` | Milk Storage | Placeholder |
-| `/weight` | Weight Log | Placeholder |
-| `/vaccinations` | Vaccinations | Placeholder |
-| `/appointments` | Appointments | Placeholder |
+| Route | View | Features |
+|-------|------|----------|
+| `/login` | Login | JWT auth, error handling |
+| `/` | Dashboard | Gap timer, today's summary, breast balance, milk inventory, upcoming vaccines, next appointment |
+| `/feedings` | Feed Log | Timeline grouped by day, date nav, type filters, FeedEntryModal (bottle/breast/pump + combo), pagination, delete |
+| `/analytics` | Analytics | Daily volume bar chart, feed type donut, breast balance, feeds/day trend, avg gap line chart, 7/14/30 day range |
+| `/milk-storage` | Milk Storage | Inventory cards (room temp/fridge/freezer), stash list with expiry badges, use/transfer/discard with partial volume, store modal |
+| `/weight` | Weight Log | Growth chart, weight table, add measurement modal, weight change tracking |
+| `/vaccinations` | Vaccinations | Progress bar, upcoming/completed tabs, grouped by milestone, mark administered modal with lot/site |
+| `/appointments` | Appointments | Upcoming/past sections, create/edit modal, complete/cancel actions, type badges |
+
+## PWA
+
+Includes `manifest.json` for "Add to Home Screen" on mobile devices.

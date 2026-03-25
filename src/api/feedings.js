@@ -27,3 +27,7 @@ export function getFeedingSummary(params = {}) {
 export function getLastFeeding() {
   return client.get('/feedings/last')
 }
+
+export function getFeedingAnalytics(params = {}) {
+  return client.get('/feedings/analytics', { params })
+}

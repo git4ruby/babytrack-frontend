@@ -1,9 +1,11 @@
 <script setup>
-import { onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useFeedingsStore } from '@/stores/feedings'
 import { useBabyStore } from '@/stores/baby'
 import { useMilkStore } from '@/stores/milk'
 import { useTimeSince } from '@/composables/useTimeSince'
+import { getUpcomingVaccinations } from '@/api/vaccinations'
+import { getNextAppointment } from '@/api/appointments'
 import dayjs from 'dayjs'
 
 const feedingsStore = useFeedingsStore()
@@ -17,12 +19,16 @@ const { label: gapLabel, urgency } = useTimeSince(lastFeedTime)
 
 const summary = computed(() => feedingsStore.todaySummary)
 const inventory = computed(() => milkStore.inventory)
+const upcomingVaccines = ref([])
+const nextAppointment = ref(null)
 
 onMounted(async () => {
   await Promise.all([
     feedingsStore.fetchLastFeeding(),
     feedingsStore.fetchSummary(today),
     milkStore.fetchInventory(),
+    getUpcomingVaccinations().then(r => { upcomingVaccines.value = r.data.data?.slice(0, 3) || [] }).catch(() => {}),
+    getNextAppointment().then(r => { nextAppointment.value = r.data.data }).catch(() => {}),
   ])
 })
 </script>
@@ -129,6 +135,33 @@ onMounted(async () => {
       <p v-if="inventory.expiring_soon?.count > 0" class="text-center text-sm text-amber-600 mt-1">
         {{ inventory.expiring_soon.count }} expiring soon
       </p>
+    </div>
+
+    <!-- Next Appointment -->
+    <div v-if="nextAppointment" class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="text-sm font-medium text-gray-500">Next Appointment</h3>
+        <router-link to="/appointments" class="text-sm text-blue-600 hover:text-blue-700">View all</router-link>
+      </div>
+      <p class="font-medium text-gray-900">{{ nextAppointment.title }}</p>
+      <p class="text-sm text-gray-600 mt-1">{{ dayjs(nextAppointment.scheduled_at).format('ddd, MMM D · h:mm A') }}</p>
+      <p v-if="nextAppointment.provider_name" class="text-xs text-gray-400 mt-1">{{ nextAppointment.provider_name }} · {{ nextAppointment.location }}</p>
+    </div>
+
+    <!-- Upcoming Vaccinations -->
+    <div v-if="upcomingVaccines.length" class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-sm font-medium text-gray-500">Upcoming Vaccines</h3>
+        <router-link to="/vaccinations" class="text-sm text-blue-600 hover:text-blue-700">View all</router-link>
+      </div>
+      <div class="space-y-2">
+        <div v-for="vax in upcomingVaccines" :key="vax.id" class="flex items-center justify-between">
+          <span class="text-sm text-gray-700">{{ vax.vaccine_name }}</span>
+          <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', vax.overdue ? 'bg-red-100 text-red-700' : vax.due_soon ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600']">
+            {{ vax.recommended_date ? dayjs(vax.recommended_date).format('MMM D') : 'TBD' }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
