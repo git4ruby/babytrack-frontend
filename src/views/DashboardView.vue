@@ -16,7 +16,6 @@ const milkStore = useMilkStore()
 const ui = useUiStore()
 
 const today = dayjs().format('YYYY-MM-DD')
-const yesterday = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
 
 const lastFeedTime = computed(() => feedingsStore.lastFeeding?.started_at || null)
 const { label: gapLabel, urgency } = useTimeSince(lastFeedTime)
@@ -27,9 +26,7 @@ const upcomingVaccines = ref([])
 const nextAppointment = ref(null)
 const weeklyTotals = ref({})
 
-// If today has no feeds, show that explicitly but still load data
 const hasDataToday = computed(() => summary.value && summary.value.total_feeds > 0)
-const summaryLabel = computed(() => hasDataToday.value ? 'Today' : 'Today (no feeds yet)')
 
 onMounted(async () => {
   await Promise.all([
@@ -44,12 +41,11 @@ onMounted(async () => {
   ])
 })
 
-// Mini sparkline data for last 7 days
 const sparkData = computed(() => {
   const data = []
   for (let i = 6; i >= 0; i--) {
     const d = dayjs().subtract(i, 'day').format('YYYY-MM-DD')
-    data.push({ date: d, ml: weeklyTotals.value[d] || 0, label: dayjs(d).format('dd') })
+    data.push({ date: d, ml: weeklyTotals.value[d] || 0, label: dayjs(d).format('dd')[0] })
   }
   return data
 })
@@ -57,178 +53,201 @@ const sparkMax = computed(() => Math.max(...sparkData.value.map(d => d.ml), 1))
 </script>
 
 <template>
-  <div class="space-y-5 max-w-4xl">
-    <!-- Welcome + Gap Timer -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Gap Timer Card -->
+  <div class="space-y-6">
+    <!-- Top row: Gap timer (wide) + Quick actions -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Gap Timer — spans 2 cols -->
       <div :class="[
-        'rounded-2xl p-6 text-white relative overflow-hidden',
+        'lg:col-span-2 rounded-2xl p-7 text-white relative overflow-hidden min-h-[160px] flex flex-col justify-between',
         urgency === 'alert'
-          ? 'bg-gradient-to-br from-red-500 to-rose-600'
+          ? 'bg-gradient-to-br from-red-500 via-rose-500 to-pink-600'
           : urgency === 'warning'
-            ? 'bg-gradient-to-br from-amber-500 to-orange-600'
-            : 'bg-gradient-to-br from-blue-500 to-indigo-600'
+            ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-red-500'
+            : 'bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600'
       ]">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
-        <div class="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-6 -translate-x-6"></div>
-        <p class="text-sm font-medium text-white/70">Time since last feed</p>
-        <p class="text-4xl font-black mt-2 tracking-tight">{{ gapLabel }}</p>
-        <div v-if="feedingsStore.lastFeeding" class="mt-3 flex items-center gap-2">
-          <span class="text-xs bg-white/20 px-2 py-1 rounded-full capitalize">{{ feedingsStore.lastFeeding.feed_type }}</span>
-          <span v-if="feedingsStore.lastFeeding.volume_ml" class="text-sm text-white/80">{{ feedingsStore.lastFeeding.volume_ml }}ml</span>
-          <span v-if="feedingsStore.lastFeeding.breast_side" class="text-sm text-white/80 capitalize">{{ feedingsStore.lastFeeding.breast_side }}</span>
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full"></div>
+        <div class="absolute -bottom-8 -left-8 w-28 h-28 bg-white/5 rounded-full"></div>
+        <div class="absolute top-6 right-6 w-16 h-16 bg-white/5 rounded-full"></div>
+        <div>
+          <p class="text-sm font-medium text-white/60 uppercase tracking-wider">Time since last feed</p>
+          <p class="text-5xl font-black mt-1 tracking-tight">{{ gapLabel }}</p>
+        </div>
+        <div v-if="feedingsStore.lastFeeding" class="flex items-center gap-2 mt-4">
+          <span class="text-xs bg-white/20 backdrop-blur px-2.5 py-1 rounded-full capitalize font-medium">{{ feedingsStore.lastFeeding.feed_type }}</span>
+          <span v-if="feedingsStore.lastFeeding.volume_ml" class="text-sm text-white/80 font-medium">{{ feedingsStore.lastFeeding.volume_ml }}ml</span>
+          <span v-if="feedingsStore.lastFeeding.breast_side" class="text-sm text-white/80 capitalize font-medium">{{ feedingsStore.lastFeeding.breast_side }}</span>
+          <span class="text-xs text-white/50 ml-auto">{{ dayjs(feedingsStore.lastFeeding.started_at).format('h:mm A') }}</span>
         </div>
       </div>
 
       <!-- Quick Actions -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <p class="text-sm font-medium text-gray-500 mb-4">Quick Actions</p>
-        <div class="grid grid-cols-2 gap-3">
-          <button @click="ui.feedModalOpen = true" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition group">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col">
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Quick Actions</p>
+        <div class="grid grid-cols-2 gap-2 flex-1">
+          <button @click="ui.feedModalOpen = true" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 transition group">
             <span class="text-2xl group-hover:scale-110 transition-transform">🍼</span>
-            <span class="text-xs font-semibold text-blue-700">Log Feed</span>
+            <span class="text-[11px] font-bold text-blue-700">Log Feed</span>
           </button>
-          <button @click="ui.milkModalOpen = true" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition group">
+          <button @click="ui.milkModalOpen = true" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 transition group">
             <span class="text-2xl group-hover:scale-110 transition-transform">🧊</span>
-            <span class="text-xs font-semibold text-indigo-700">Store Milk</span>
+            <span class="text-[11px] font-bold text-indigo-700">Store Milk</span>
           </button>
-          <router-link to="/weight" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition group">
+          <router-link to="/weight" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition group">
             <span class="text-2xl group-hover:scale-110 transition-transform">⚖️</span>
-            <span class="text-xs font-semibold text-emerald-700">Log Weight</span>
+            <span class="text-[11px] font-bold text-emerald-700">Weight</span>
           </router-link>
-          <router-link to="/appointments" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition group">
+          <router-link to="/appointments" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 transition group">
             <span class="text-2xl group-hover:scale-110 transition-transform">📅</span>
-            <span class="text-xs font-semibold text-amber-700">Appointments</span>
+            <span class="text-[11px] font-bold text-amber-700">Appts</span>
           </router-link>
         </div>
       </div>
     </div>
 
-    <!-- Today's Stats -->
-    <div v-if="summary" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-sm font-semibold text-gray-900">{{ summaryLabel }}</h3>
-        <router-link to="/feedings" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View Feed Log</router-link>
+    <!-- Stats row -->
+    <div v-if="summary" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <p class="text-4xl font-black text-slate-800">{{ summary.total_feeds }}</p>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Feeds Today</p>
       </div>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="text-center p-3 rounded-xl bg-slate-50">
-          <p class="text-3xl font-black text-slate-800">{{ summary.total_feeds }}</p>
-          <p class="text-xs text-slate-500 mt-1">Feeds</p>
-        </div>
-        <div class="text-center p-3 rounded-xl bg-blue-50">
-          <p class="text-3xl font-black text-blue-700">{{ summary.total_ml }}</p>
-          <p class="text-xs text-blue-500 mt-1">Total ml</p>
-        </div>
-        <div class="text-center p-3 rounded-xl bg-pink-50">
-          <p class="text-3xl font-black text-pink-700">{{ summary.breast_duration_minutes?.total || 0 }}</p>
-          <p class="text-xs text-pink-500 mt-1">Breast min</p>
-        </div>
-        <div class="text-center p-3 rounded-xl bg-amber-50">
-          <p class="text-3xl font-black text-amber-700">{{ summary.average_gap_hours }}</p>
-          <p class="text-xs text-amber-500 mt-1">Avg gap (hrs)</p>
-        </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <p class="text-4xl font-black text-blue-600">{{ summary.total_ml }}<span class="text-lg font-bold text-blue-300">ml</span></p>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Volume</p>
       </div>
-
-      <!-- Type breakdown chips -->
-      <div class="flex items-center gap-3 mt-4 justify-center">
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-100 px-3 py-1.5 rounded-full">🍼 {{ summary.feeds_by_type?.bottle || 0 }} bottles</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-pink-700 bg-pink-100 px-3 py-1.5 rounded-full">🤱 {{ summary.feeds_by_type?.breastfeed || 0 }} breast</span>
-        <span class="inline-flex items-center gap-1.5 text-xs font-medium text-purple-700 bg-purple-100 px-3 py-1.5 rounded-full">⚙️ {{ summary.feeds_by_type?.pump || 0 }} pump</span>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <p class="text-4xl font-black text-pink-600">{{ summary.breast_duration_minutes?.total || 0 }}<span class="text-lg font-bold text-pink-300">m</span></p>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Breast Time</p>
       </div>
-
-      <!-- Breast Balance -->
-      <div v-if="summary.breast_balance && (summary.breast_balance.left_percent > 0 || summary.breast_balance.right_percent > 0)" class="mt-4">
-        <div class="flex h-4 rounded-full overflow-hidden bg-gray-100">
-          <div class="bg-gradient-to-r from-pink-400 to-pink-500 flex items-center justify-center text-[10px] text-white font-bold transition-all" :style="{ width: summary.breast_balance.left_percent + '%' }">
-            <span v-if="summary.breast_balance.left_percent > 20">L {{ summary.breast_balance.left_percent }}%</span>
-          </div>
-          <div class="bg-gradient-to-r from-purple-400 to-purple-500 flex items-center justify-center text-[10px] text-white font-bold transition-all" :style="{ width: summary.breast_balance.right_percent + '%' }">
-            <span v-if="summary.breast_balance.right_percent > 20">R {{ summary.breast_balance.right_percent }}%</span>
-          </div>
-        </div>
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
+        <p class="text-4xl font-black text-amber-600">{{ summary.average_gap_hours }}<span class="text-lg font-bold text-amber-300">h</span></p>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Avg Gap</p>
       </div>
     </div>
 
-    <!-- Weekly Mini Chart -->
-    <div v-if="Object.keys(weeklyTotals).length" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-sm font-semibold text-gray-900">Last 7 Days</h3>
-        <router-link to="/analytics" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Full Analytics</router-link>
-      </div>
-      <div class="flex items-end gap-2 h-24">
-        <div v-for="d in sparkData" :key="d.date" class="flex-1 flex flex-col items-center gap-1">
-          <span class="text-[10px] text-gray-400 font-medium">{{ d.ml || '' }}</span>
-          <div
-            class="w-full rounded-t-md transition-all bg-gradient-to-t from-blue-500 to-sky-400"
-            :style="{ height: Math.max((d.ml / sparkMax) * 72, 4) + 'px' }"
-          ></div>
-          <span class="text-[10px] text-gray-400">{{ d.label }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <!-- Milk Inventory -->
-      <div v-if="inventory" class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <!-- Middle row: Weekly chart + Type breakdown + Breast balance -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Weekly mini chart -->
+      <div v-if="Object.keys(weeklyTotals).length" class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-sm font-semibold text-gray-900">Milk Inventory</h3>
-          <router-link to="/milk-storage" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Manage</router-link>
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Last 7 Days — Daily Volume</h3>
+          <router-link to="/analytics" class="text-xs text-blue-600 hover:text-blue-700 font-semibold">Full Analytics →</router-link>
         </div>
+        <div class="flex items-end gap-3 h-28">
+          <div v-for="(d, i) in sparkData" :key="d.date" class="flex-1 flex flex-col items-center gap-1">
+            <span class="text-[10px] font-bold text-gray-500">{{ d.ml || '' }}</span>
+            <div
+              :class="[
+                'w-full rounded-lg transition-all',
+                i === sparkData.length - 1
+                  ? 'bg-gradient-to-t from-blue-600 to-sky-400'
+                  : 'bg-gradient-to-t from-blue-200 to-blue-100'
+              ]"
+              :style="{ height: Math.max((d.ml / sparkMax) * 80, 6) + 'px' }"
+            ></div>
+            <span :class="['text-[11px] font-bold', i === sparkData.length - 1 ? 'text-blue-600' : 'text-gray-400']">{{ d.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feed type + balance -->
+      <div v-if="summary" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Today's Mix</h3>
         <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <span class="text-xl">🌡️</span>
-            <div class="flex-1">
-              <div class="flex justify-between text-sm"><span class="text-gray-600">Room Temp</span><span class="font-bold text-gray-900">{{ inventory.by_storage_type?.room_temp?.total_ml || 0 }}ml</span></div>
-            </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">🍼 Bottles</span>
+            <span class="text-sm font-black text-blue-600">{{ summary.feeds_by_type?.bottle || 0 }}</span>
           </div>
-          <div class="flex items-center gap-3">
-            <span class="text-xl">❄️</span>
-            <div class="flex-1">
-              <div class="flex justify-between text-sm"><span class="text-gray-600">Fridge</span><span class="font-bold text-gray-900">{{ inventory.by_storage_type?.fridge?.total_ml || 0 }}ml</span></div>
-            </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">🤱 Breastfeed</span>
+            <span class="text-sm font-black text-pink-600">{{ summary.feeds_by_type?.breastfeed || 0 }}</span>
           </div>
-          <div class="flex items-center gap-3">
-            <span class="text-xl">🧊</span>
-            <div class="flex-1">
-              <div class="flex justify-between text-sm"><span class="text-gray-600">Freezer</span><span class="font-bold text-gray-900">{{ inventory.by_storage_type?.freezer?.total_ml || 0 }}ml</span></div>
-            </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">⚙️ Pump</span>
+            <span class="text-sm font-black text-purple-600">{{ summary.feeds_by_type?.pump || 0 }}</span>
           </div>
         </div>
-        <div class="mt-3 pt-3 border-t border-gray-100 text-center">
-          <span class="text-sm font-bold text-gray-900">{{ inventory.summary?.total_ml || 0 }}ml</span>
+        <!-- Breast Balance -->
+        <div v-if="summary.breast_balance && (summary.breast_balance.left_percent > 0 || summary.breast_balance.right_percent > 0)" class="mt-4 pt-4 border-t border-gray-100">
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Breast Balance</p>
+          <div class="flex h-5 rounded-full overflow-hidden bg-gray-100">
+            <div class="bg-gradient-to-r from-pink-400 to-pink-500 flex items-center justify-center text-[10px] text-white font-bold" :style="{ width: summary.breast_balance.left_percent + '%' }">
+              <span v-if="summary.breast_balance.left_percent > 20">L</span>
+            </div>
+            <div class="bg-gradient-to-r from-purple-400 to-purple-500 flex items-center justify-center text-[10px] text-white font-bold" :style="{ width: summary.breast_balance.right_percent + '%' }">
+              <span v-if="summary.breast_balance.right_percent > 20">R</span>
+            </div>
+          </div>
+          <div class="flex justify-between text-[10px] text-gray-400 mt-1 font-medium">
+            <span>Left {{ summary.breast_balance.left_percent }}%</span>
+            <span>Right {{ summary.breast_balance.right_percent }}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom row: Milk + Appointment + Vaccines -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Milk Inventory -->
+      <div v-if="inventory" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Milk Inventory</h3>
+          <router-link to="/milk-storage" class="text-xs text-blue-600 hover:text-blue-700 font-semibold">Manage →</router-link>
+        </div>
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-orange-50">
+            <span class="text-sm">🌡️ Room Temp</span>
+            <span class="text-sm font-black text-orange-600">{{ inventory.by_storage_type?.room_temp?.total_ml || 0 }}ml</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-sky-50">
+            <span class="text-sm">❄️ Fridge</span>
+            <span class="text-sm font-black text-sky-600">{{ inventory.by_storage_type?.fridge?.total_ml || 0 }}ml</span>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-indigo-50">
+            <span class="text-sm">🧊 Freezer</span>
+            <span class="text-sm font-black text-indigo-600">{{ inventory.by_storage_type?.freezer?.total_ml || 0 }}ml</span>
+          </div>
+        </div>
+        <div class="mt-3 text-center">
+          <span class="text-lg font-black text-gray-800">{{ inventory.summary?.total_ml || 0 }}ml</span>
           <span class="text-xs text-gray-400"> total</span>
         </div>
-        <p v-if="inventory.expiring_soon?.count > 0" class="text-xs text-amber-600 text-center mt-1 font-medium">⚠️ {{ inventory.expiring_soon.count }} expiring soon</p>
+        <p v-if="inventory.expiring_soon?.count > 0" class="text-xs text-amber-600 text-center mt-1 font-bold">⚠ {{ inventory.expiring_soon.count }} expiring soon</p>
       </div>
 
-      <!-- Upcoming -->
-      <div class="space-y-4">
-        <!-- Next Appointment -->
-        <div v-if="nextAppointment" class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-100">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-semibold text-amber-900">Next Appointment</h3>
-            <router-link to="/appointments" class="text-xs text-amber-600 font-medium">View all</router-link>
-          </div>
-          <p class="font-semibold text-gray-900">{{ nextAppointment.title }}</p>
-          <p class="text-sm text-gray-600 mt-1">📅 {{ dayjs(nextAppointment.scheduled_at).format('ddd, MMM D · h:mm A') }}</p>
-          <p v-if="nextAppointment.provider_name" class="text-xs text-gray-500 mt-1">{{ nextAppointment.provider_name }} · {{ nextAppointment.location }}</p>
-        </div>
+      <!-- Next Appointment -->
+      <div v-if="nextAppointment" class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200/50">
+        <h3 class="text-xs font-bold text-amber-500 uppercase tracking-wider mb-3">Next Appointment</h3>
+        <p class="font-bold text-gray-900 text-lg">{{ nextAppointment.title }}</p>
+        <p class="text-sm text-gray-600 mt-2">📅 {{ dayjs(nextAppointment.scheduled_at).format('ddd, MMM D · h:mm A') }}</p>
+        <p v-if="nextAppointment.provider_name" class="text-xs text-gray-500 mt-1">👨‍⚕️ {{ nextAppointment.provider_name }}</p>
+        <p v-if="nextAppointment.location" class="text-xs text-gray-500">📍 {{ nextAppointment.location }}</p>
+        <router-link to="/appointments" class="inline-block mt-3 text-xs text-amber-600 font-semibold hover:text-amber-700">View all →</router-link>
+      </div>
+      <div v-else class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+        <span class="text-3xl mb-2">📅</span>
+        <p class="text-sm text-gray-400">No upcoming appointments</p>
+        <router-link to="/appointments" class="text-xs text-blue-600 font-semibold mt-2">Schedule one →</router-link>
+      </div>
 
-        <!-- Upcoming Vaccines -->
-        <div v-if="upcomingVaccines.length" class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-100">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-semibold text-emerald-900">Upcoming Vaccines</h3>
-            <router-link to="/vaccinations" class="text-xs text-emerald-600 font-medium">View all</router-link>
-          </div>
-          <div class="space-y-2">
-            <div v-for="vax in upcomingVaccines" :key="vax.id" class="flex items-center justify-between">
-              <span class="text-sm text-gray-700">{{ vax.vaccine_name }}</span>
-              <span :class="['text-[10px] px-2 py-0.5 rounded-full font-bold', vax.overdue ? 'bg-red-100 text-red-700' : vax.due_soon ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600']">
-                {{ vax.recommended_date ? dayjs(vax.recommended_date).format('MMM D') : 'TBD' }}
-              </span>
-            </div>
+      <!-- Upcoming Vaccines -->
+      <div v-if="upcomingVaccines.length" class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-5 border border-emerald-200/50">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-emerald-500 uppercase tracking-wider">Upcoming Vaccines</h3>
+          <router-link to="/vaccinations" class="text-xs text-emerald-600 font-semibold">View all →</router-link>
+        </div>
+        <div class="space-y-2">
+          <div v-for="vax in upcomingVaccines" :key="vax.id" class="flex items-center justify-between bg-white/60 rounded-lg p-2">
+            <span class="text-xs text-gray-700 font-medium">{{ vax.vaccine_name }}</span>
+            <span :class="['text-[10px] px-2 py-0.5 rounded-full font-bold', vax.overdue ? 'bg-red-100 text-red-700' : vax.due_soon ? 'bg-amber-100 text-amber-700' : 'bg-white text-gray-500']">
+              {{ vax.recommended_date ? dayjs(vax.recommended_date).format('MMM D') : 'TBD' }}
+            </span>
           </div>
         </div>
+      </div>
+      <div v-else class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
+        <span class="text-3xl mb-2">💉</span>
+        <p class="text-sm text-gray-400">Vaccines up to date</p>
+        <router-link to="/vaccinations" class="text-xs text-blue-600 font-semibold mt-2">View schedule →</router-link>
       </div>
     </div>
   </div>

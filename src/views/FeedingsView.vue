@@ -106,7 +106,7 @@ onMounted(loadFeedings)
 </script>
 
 <template>
-  <div class="space-y-4 max-w-4xl">
+  <div class="space-y-4">
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900">Feed Log</h1>

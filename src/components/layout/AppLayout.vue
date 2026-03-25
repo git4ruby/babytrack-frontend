@@ -16,14 +16,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-slate-50">
     <!-- Desktop sidebar -->
     <AppSidebar class="hidden lg:block" />
 
     <!-- Main content -->
     <div class="lg:pl-64">
       <AppHeader />
-      <main class="p-4 lg:p-6 pb-20 lg:pb-6">
+      <main class="px-4 py-5 lg:px-8 lg:py-6 pb-24 lg:pb-8">
         <router-view />
       </main>
     </div>
