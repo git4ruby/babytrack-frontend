@@ -8,6 +8,7 @@ import { useTimeSince } from '@/composables/useTimeSince'
 import { getUpcomingVaccinations } from '@/api/vaccinations'
 import { getNextAppointment } from '@/api/appointments'
 import { getFeedingAnalytics } from '@/api/feedings'
+import { getDiaperSummary } from '@/api/diapers'
 import dayjs from 'dayjs'
 
 const feedingsStore = useFeedingsStore()
@@ -25,6 +26,7 @@ const inventory = computed(() => milkStore.inventory)
 const upcomingVaccines = ref([])
 const nextAppointment = ref(null)
 const weeklyTotals = ref({})
+const diaperSummary = ref(null)
 
 const hasDataToday = computed(() => summary.value && summary.value.total_feeds > 0)
 
@@ -38,6 +40,7 @@ onMounted(async () => {
     getFeedingAnalytics({ from: dayjs().subtract(6, 'day').format('YYYY-MM-DD'), to: today }).then(r => {
       weeklyTotals.value = r.data.data?.daily_totals || {}
     }).catch(() => {}),
+    getDiaperSummary({ date: today }).then(r => { diaperSummary.value = r.data.data }).catch(() => {}),
   ])
 })
 
@@ -92,20 +95,20 @@ const sparkMax = computed(() => Math.max(...sparkData.value.map(d => d.ml), 1))
             <span class="text-2xl group-hover:scale-110 transition-transform">🧊</span>
             <span class="text-[11px] font-bold text-indigo-700">Store Milk</span>
           </button>
+          <button @click="ui.diaperModalOpen = true" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 transition group">
+            <span class="text-2xl group-hover:scale-110 transition-transform">🧷</span>
+            <span class="text-[11px] font-bold text-cyan-700">Diaper</span>
+          </button>
           <router-link to="/weight" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition group">
             <span class="text-2xl group-hover:scale-110 transition-transform">⚖️</span>
             <span class="text-[11px] font-bold text-emerald-700">Weight</span>
-          </router-link>
-          <router-link to="/appointments" class="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 transition group">
-            <span class="text-2xl group-hover:scale-110 transition-transform">📅</span>
-            <span class="text-[11px] font-bold text-amber-700">Appts</span>
           </router-link>
         </div>
       </div>
     </div>
 
     <!-- Stats row -->
-    <div v-if="summary" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+    <div v-if="summary" class="grid grid-cols-2 lg:grid-cols-5 gap-3">
       <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
         <p class="text-4xl font-black text-slate-800">{{ summary.total_feeds }}</p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Feeds Today</p>
@@ -122,6 +125,11 @@ const sparkMax = computed(() => Math.max(...sparkData.value.map(d => d.ml), 1))
         <p class="text-4xl font-black text-amber-600">{{ summary.average_gap_hours }}<span class="text-lg font-bold text-amber-300">h</span></p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Avg Gap</p>
       </div>
+      <router-link to="/diapers" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center hover:border-cyan-200 transition">
+        <p class="text-4xl font-black text-cyan-600">{{ diaperSummary?.total || 0 }}</p>
+        <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">🧷 Diapers</p>
+        <p v-if="diaperSummary && diaperSummary.total > 0" class="text-[10px] text-gray-400 mt-0.5">💧{{ diaperSummary.wet }} 💩{{ diaperSummary.soiled }}</p>
+      </router-link>
     </div>
 
     <!-- Middle row: Weekly chart + Type breakdown + Breast balance -->

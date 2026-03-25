@@ -7,6 +7,7 @@ import AppBottomNav from './AppBottomNav.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
 import FeedEntryModal from '@/components/FeedEntryModal.vue'
 import MilkStashModal from '@/components/MilkStashModal.vue'
+import DiaperEntryModal from '@/components/DiaperEntryModal.vue'
 
 const babyStore = useBabyStore()
 
@@ -34,6 +35,7 @@ onMounted(() => {
     <!-- Global modals -->
     <FeedEntryModal />
     <MilkStashModal />
+    <DiaperEntryModal />
 
     <!-- Toast notifications -->
     <ToastContainer />

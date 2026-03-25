@@ -5,6 +5,7 @@ export const useUiStore = defineStore('ui', () => {
   const sidebarOpen = ref(false)
   const feedModalOpen = ref(false)
   const milkModalOpen = ref(false)
+  const diaperModalOpen = ref(false)
   const toasts = ref([])
 
   function toggleSidebar() {
@@ -20,7 +21,7 @@ export const useUiStore = defineStore('ui', () => {
   }
 
   return {
-    sidebarOpen, feedModalOpen, milkModalOpen, toasts,
+    sidebarOpen, feedModalOpen, milkModalOpen, diaperModalOpen, toasts,
     toggleSidebar, showToast,
   }
 })

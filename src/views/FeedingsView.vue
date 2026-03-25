@@ -12,7 +12,7 @@ const feedingsStore = useFeedingsStore()
 const ui = useUiStore()
 
 // Date range
-const rangePreset = ref('7d')
+const rangePreset = ref('today')
 const customFrom = ref(dayjs().subtract(7, 'day').format('YYYY-MM-DD'))
 const customTo = ref(dayjs().format('YYYY-MM-DD'))
 const selectedType = ref('')
@@ -20,6 +20,7 @@ const page = ref(1)
 
 const rangePresets = [
   { value: 'today', label: 'Today' },
+  { value: 'yesterday', label: 'Yesterday' },
   { value: '3d', label: '3 Days' },
   { value: '7d', label: '7 Days' },
   { value: '14d', label: '14 Days' },
@@ -38,6 +39,7 @@ const dateRange = computed(() => {
   const today = dayjs()
   switch (rangePreset.value) {
     case 'today': return { from: today.format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
+    case 'yesterday': { const y = today.subtract(1, 'day'); return { from: y.format('YYYY-MM-DD'), to: y.format('YYYY-MM-DD') } }
     case '3d': return { from: today.subtract(2, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
     case '7d': return { from: today.subtract(6, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }
     case '14d': return { from: today.subtract(13, 'day').format('YYYY-MM-DD'), to: today.format('YYYY-MM-DD') }

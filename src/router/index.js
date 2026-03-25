@@ -33,6 +33,11 @@ const routes = [
         component: () => import('@/views/MilkStorageView.vue'),
       },
       {
+        path: 'diapers',
+        name: 'Diapers',
+        component: () => import('@/views/DiapersView.vue'),
+      },
+      {
         path: 'weight',
         name: 'Weight',
         component: () => import('@/views/WeightView.vue'),

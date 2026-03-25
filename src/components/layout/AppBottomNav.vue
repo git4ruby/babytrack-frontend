@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 import {
   HomeIcon,
   ClipboardDocumentListIcon,
-  BeakerIcon,
+  SparklesIcon,
   ShieldCheckIcon,
   CalendarDaysIcon,
 } from '@heroicons/vue/24/outline'
@@ -13,7 +13,7 @@ const route = useRoute()
 const navItems = [
   { name: 'Home', path: '/', icon: HomeIcon },
   { name: 'Feeds', path: '/feedings', icon: ClipboardDocumentListIcon },
-  { name: 'Milk', path: '/milk-storage', icon: BeakerIcon },
+  { name: 'Diapers', path: '/diapers', icon: SparklesIcon },
   { name: 'Vaccines', path: '/vaccinations', icon: ShieldCheckIcon },
   { name: 'Appts', path: '/appointments', icon: CalendarDaysIcon },
 ]
