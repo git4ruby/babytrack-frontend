@@ -11,6 +11,7 @@ const ui = useUiStore()
 
 const loading = ref(false)
 const volumeMl = ref('')
+const storedAt = ref(dayjs().format('YYYY-MM-DDTHH:mm'))
 const storageType = ref('fridge')
 const sourceType = ref('pumped')
 const label = ref('')
@@ -24,6 +25,7 @@ const storageOptions = [
 
 function resetForm() {
   volumeMl.value = ''
+  storedAt.value = dayjs().format('YYYY-MM-DDTHH:mm')
   storageType.value = 'fridge'
   sourceType.value = 'pumped'
   label.value = ''
@@ -41,9 +43,10 @@ async function submit() {
   try {
     await milkStore.storeMilk({
       volume_ml: parseInt(volumeMl.value),
+      stored_at: new Date(storedAt.value).toISOString(),
       storage_type: storageType.value,
       source_type: sourceType.value,
-      label: label.value || `${dayjs().format('MMM D h:mm A')} pump`,
+      label: label.value || `${dayjs(storedAt.value).format('MMM D h:mm A')} pump`,
       notes: notes.value || null,
     })
     ui.showToast(`${volumeMl.value}ml stored in ${storageType.value.replace('_', ' ')}`)
@@ -69,6 +72,16 @@ async function submit() {
           min="1"
           max="500"
           placeholder="e.g. 120"
+          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+        />
+      </div>
+
+      <!-- Date/Time -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Expressed / Stored At</label>
+        <input
+          v-model="storedAt"
+          type="datetime-local"
           class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
         />
       </div>
