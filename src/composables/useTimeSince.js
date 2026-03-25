@@ -1,16 +1,14 @@
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
 
-dayjs.extend(relativeTime)
 dayjs.extend(duration)
 
 export function useTimeSince(dateRef) {
-  const label = ref('')
+  const label = ref('--')
   const hours = ref(0)
   const minutes = ref(0)
-  const urgency = ref('normal') // normal, warning, alert
+  const urgency = ref('normal')
   let timer = null
 
   function update() {
@@ -32,9 +30,13 @@ export function useTimeSince(dateRef) {
     else urgency.value = 'normal'
   }
 
-  onMounted(() => {
+  // React immediately when dateRef changes (e.g. API response arrives)
+  watch(() => dateRef.value, () => {
     update()
-    timer = setInterval(update, 30000) // update every 30s
+  }, { immediate: true })
+
+  onMounted(() => {
+    timer = setInterval(update, 30000)
   })
 
   onUnmounted(() => {
