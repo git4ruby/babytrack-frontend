@@ -3,7 +3,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useBabyStore } from '@/stores/baby'
 import { useUiStore } from '@/stores/ui'
-import { Bars3Icon, PlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { Bars3Icon, PlusIcon, ArrowRightOnRectangleIcon, BeakerIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -42,6 +42,14 @@ async function handleLogout() {
         >
           <PlusIcon class="w-4 h-4" />
           <span class="hidden sm:inline">Log Feed</span>
+        </button>
+
+        <button
+          @click="ui.milkModalOpen = true"
+          class="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-medium rounded-lg transition"
+        >
+          <BeakerIcon class="w-4 h-4" />
+          <span class="hidden sm:inline">Store Milk</span>
         </button>
 
         <button

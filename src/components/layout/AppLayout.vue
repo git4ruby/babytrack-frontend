@@ -5,6 +5,8 @@ import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
 import AppBottomNav from './AppBottomNav.vue'
 import ToastContainer from '@/components/ui/ToastContainer.vue'
+import FeedEntryModal from '@/components/FeedEntryModal.vue'
+import MilkStashModal from '@/components/MilkStashModal.vue'
 
 const babyStore = useBabyStore()
 
@@ -28,6 +30,10 @@ onMounted(() => {
 
     <!-- Mobile bottom nav -->
     <AppBottomNav class="lg:hidden" />
+
+    <!-- Global modals -->
+    <FeedEntryModal />
+    <MilkStashModal />
 
     <!-- Toast notifications -->
     <ToastContainer />

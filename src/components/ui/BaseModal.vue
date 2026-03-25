@@ -1,0 +1,59 @@
+<script setup>
+import { Dialog, DialogPanel, DialogTitle, TransitionRoot, TransitionChild } from '@headlessui/vue'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
+
+defineProps({
+  open: { type: Boolean, required: true },
+  title: { type: String, default: '' },
+  size: { type: String, default: 'md' }, // sm, md, lg
+})
+
+const emit = defineEmits(['close'])
+</script>
+
+<template>
+  <TransitionRoot :show="open" as="template">
+    <Dialog @close="emit('close')" class="relative z-50">
+      <!-- Backdrop -->
+      <TransitionChild
+        enter="ease-out duration-200" enter-from="opacity-0" enter-to="opacity-100"
+        leave="ease-in duration-150" leave-from="opacity-100" leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/40" />
+      </TransitionChild>
+
+      <!-- Panel -->
+      <div class="fixed inset-0 flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <TransitionChild
+          enter="ease-out duration-200"
+          enter-from="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
+          enter-to="opacity-100 translate-y-0 sm:scale-100"
+          leave="ease-in duration-150"
+          leave-from="opacity-100 translate-y-0 sm:scale-100"
+          leave-to="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
+        >
+          <DialogPanel
+            :class="[
+              'relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full overflow-hidden',
+              'max-h-[90vh] flex flex-col',
+              size === 'sm' ? 'sm:max-w-sm' : size === 'lg' ? 'sm:max-w-xl' : 'sm:max-w-md',
+            ]"
+          >
+            <!-- Header -->
+            <div v-if="title" class="flex items-center justify-between px-5 pt-5 pb-2">
+              <DialogTitle class="text-lg font-semibold text-gray-900">{{ title }}</DialogTitle>
+              <button @click="emit('close')" class="p-1 text-gray-400 hover:text-gray-600 transition">
+                <XMarkIcon class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Content -->
+            <div class="px-5 pb-5 overflow-y-auto flex-1">
+              <slot />
+            </div>
+          </DialogPanel>
+        </TransitionChild>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+</template>
