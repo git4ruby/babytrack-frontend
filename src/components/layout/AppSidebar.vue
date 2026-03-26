@@ -11,6 +11,7 @@ import {
   CalendarDaysIcon,
   SparklesIcon,
   StarIcon,
+  Cog6ToothIcon,
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
@@ -26,6 +27,7 @@ const navItems = [
   { name: 'Weight', path: '/weight', icon: ScaleIcon },
   { name: 'Vaccinations', path: '/vaccinations', icon: ShieldCheckIcon },
   { name: 'Appointments', path: '/appointments', icon: CalendarDaysIcon },
+  { name: 'Settings', path: '/settings', icon: Cog6ToothIcon },
 ]
 
 function isActive(path) {

@@ -63,6 +63,11 @@ const routes = [
         name: 'Appointments',
         component: () => import('@/views/AppointmentsView.vue'),
       },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: () => import('@/views/SettingsView.vue'),
+      },
     ],
   },
 ]
