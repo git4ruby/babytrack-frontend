@@ -10,6 +10,7 @@ import {
   ShieldCheckIcon,
   CalendarDaysIcon,
   SparklesIcon,
+  StarIcon,
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
@@ -21,6 +22,7 @@ const navItems = [
   { name: 'Analytics', path: '/analytics', icon: ChartBarIcon },
   { name: 'Diapers', path: '/diapers', icon: SparklesIcon },
   { name: 'Milk Storage', path: '/milk-storage', icon: BeakerIcon },
+  { name: 'Milestones', path: '/milestones', icon: StarIcon },
   { name: 'Weight', path: '/weight', icon: ScaleIcon },
   { name: 'Vaccinations', path: '/vaccinations', icon: ShieldCheckIcon },
   { name: 'Appointments', path: '/appointments', icon: CalendarDaysIcon },

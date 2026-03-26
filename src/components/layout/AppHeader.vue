@@ -13,7 +13,7 @@ const babyStore = useBabyStore()
 const ui = useUiStore()
 
 const pageTitle = computed(() => {
-  const titles = { Dashboard: 'Dashboard', Feedings: 'Feed Log', Analytics: 'Analytics', Diapers: 'Diapers', MilkStorage: 'Milk Storage', Weight: 'Weight', Vaccinations: 'Vaccinations', Appointments: 'Appointments' }
+  const titles = { Dashboard: 'Dashboard', Feedings: 'Feed Log', Analytics: 'Analytics', Diapers: 'Diapers', Milestones: 'Milestones', MilkStorage: 'Milk Storage', Weight: 'Weight', Vaccinations: 'Vaccinations', Appointments: 'Appointments' }
   return titles[route.name] || 'BabyTrack'
 })
 
