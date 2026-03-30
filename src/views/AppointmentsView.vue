@@ -7,8 +7,10 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon, CheckIcon, XMarkIcon, MapPinIcon } from '@heroicons/vue/24/outline'
+import { useConfirm } from '@/composables/useConfirm'
 
 const ui = useUiStore()
+const { confirm } = useConfirm()
 
 const appointments = ref([])
 const loading = ref(false)
@@ -104,7 +106,8 @@ async function markCompleted(id) {
 }
 
 async function cancelAppt(id) {
-  if (!confirm('Cancel this appointment?')) return
+  const ok = await confirm({ title: 'Cancel Appointment', message: 'Are you sure you want to cancel this appointment?', confirmLabel: 'Cancel Appointment' })
+  if (!ok) return
   await deleteAppointment(id)
   ui.showToast('Appointment cancelled')
   fetchAppointments()

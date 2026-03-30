@@ -7,9 +7,11 @@ import FeedCard from '@/components/FeedCard.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon } from '@heroicons/vue/24/outline'
+import { useConfirm } from '@/composables/useConfirm'
 
 const feedingsStore = useFeedingsStore()
 const ui = useUiStore()
+const { confirm } = useConfirm()
 
 // Date range
 const rangePreset = ref('today')
@@ -94,7 +96,8 @@ async function loadFeedings() {
 }
 
 async function handleDelete(id) {
-  if (!confirm('Delete this feeding?')) return
+  const ok = await confirm({ title: 'Delete Feeding', message: 'Are you sure you want to delete this feeding entry?', confirmLabel: 'Delete' })
+  if (!ok) return
   await feedingsStore.removeFeed(id)
   ui.showToast('Feeding deleted')
 }

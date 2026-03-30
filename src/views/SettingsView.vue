@@ -9,6 +9,9 @@ import { updateBabyById, deleteBaby } from '@/api/baby'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { useConfirm } from '@/composables/useConfirm'
+
+const { confirm: confirmDialog } = useConfirm()
 
 const auth = useAuthStore()
 const babyStore = useBabyStore()
@@ -76,7 +79,12 @@ async function saveEditBaby() {
 }
 
 async function handleDeleteBaby(baby) {
-  if (!confirm(`Delete ${baby.name}? This will permanently delete ALL data (feedings, diapers, milestones, etc.) for this baby. This cannot be undone.`)) return
+  const ok = await confirmDialog({
+    title: `Delete ${baby.name}?`,
+    message: 'This will permanently delete ALL data (feedings, diapers, milestones, weight, vaccinations, appointments) for this baby. This cannot be undone.',
+    confirmLabel: 'Delete Forever',
+  })
+  if (!ok) return
   try {
     await deleteBaby(baby.id)
     ui.showToast(`${baby.name} deleted`)

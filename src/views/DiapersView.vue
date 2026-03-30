@@ -8,8 +8,10 @@ import { useUiStore } from '@/stores/ui'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { useConfirm } from '@/composables/useConfirm'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+const { confirm } = useConfirm()
 
 const diapersStore = useDiapersStore()
 const ui = useUiStore()
@@ -107,7 +109,8 @@ async function loadData() {
 }
 
 async function handleDelete(id) {
-  if (!confirm('Delete this diaper change?')) return
+  const ok = await confirm({ title: 'Delete Diaper Change', message: 'Are you sure you want to delete this entry?', confirmLabel: 'Delete' })
+  if (!ok) return
   await diapersStore.removeChange(id)
   ui.showToast('Deleted')
 }
