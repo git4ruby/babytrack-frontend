@@ -8,8 +8,22 @@ export const useUiStore = defineStore('ui', () => {
   const diaperModalOpen = ref(false)
   const toasts = ref([])
 
+  // Edit state — set these before opening the modal to pre-fill
+  const editingFeed = ref(null)
+  const editingDiaper = ref(null)
+
   function toggleSidebar() {
     sidebarOpen.value = !sidebarOpen.value
+  }
+
+  function openFeedEdit(feed) {
+    editingFeed.value = feed
+    feedModalOpen.value = true
+  }
+
+  function openDiaperEdit(diaper) {
+    editingDiaper.value = diaper
+    diaperModalOpen.value = true
   }
 
   function showToast(message, type = 'success', duration = 3000) {
@@ -22,6 +36,7 @@ export const useUiStore = defineStore('ui', () => {
 
   return {
     sidebarOpen, feedModalOpen, milkModalOpen, diaperModalOpen, toasts,
-    toggleSidebar, showToast,
+    editingFeed, editingDiaper,
+    toggleSidebar, openFeedEdit, openDiaperEdit, showToast,
   }
 })

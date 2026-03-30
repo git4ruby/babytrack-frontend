@@ -195,6 +195,7 @@ onMounted(loadFeedings)
             v-for="feed in feeds"
             :key="feed.id"
             :feeding="feed"
+            @edit="(f) => ui.openFeedEdit(f)"
             @delete="handleDelete"
           />
         </div>

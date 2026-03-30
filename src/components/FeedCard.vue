@@ -1,13 +1,13 @@
 <script setup>
 import { computed } from 'vue'
 import dayjs from 'dayjs'
-import { TrashIcon } from '@heroicons/vue/24/outline'
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   feeding: { type: Object, required: true },
 })
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['edit', 'delete'])
 
 const typeConfig = {
   bottle: { icon: '🍼', bg: 'bg-blue-50', border: 'border-blue-100', label: 'Bottle', accent: 'text-blue-700' },
@@ -44,13 +44,11 @@ const volumeBadge = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-3 py-3 group">
-    <!-- Type icon circle -->
+  <div class="flex items-center gap-3 py-3 group cursor-pointer hover:bg-gray-50 -mx-4 px-4 rounded-lg transition" @click="emit('edit', feeding)">
     <div :class="['flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl border', config.bg, config.border]">
       {{ config.icon }}
     </div>
 
-    <!-- Content -->
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
         <span :class="['text-sm font-semibold', config.accent]">{{ config.label }}</span>
@@ -61,20 +59,20 @@ const volumeBadge = computed(() => {
       <p v-if="feeding.notes" class="text-xs text-gray-400 mt-0.5 italic">{{ feeding.notes }}</p>
     </div>
 
-    <!-- Right: volume badge + time + delete -->
     <div class="flex-shrink-0 flex items-center gap-3">
       <span v-if="volumeBadge" :class="['text-sm font-bold px-2.5 py-1 rounded-lg', config.bg, config.accent]">
         {{ volumeBadge }}
       </span>
       <div class="text-right">
         <p class="text-xs font-medium text-gray-400">{{ time }}</p>
-        <button
-          @click="emit('delete', feeding.id)"
-          class="mt-0.5 p-0.5 text-gray-200 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"
-          title="Delete"
-        >
-          <TrashIcon class="w-3.5 h-3.5" />
-        </button>
+        <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
+          <button @click.stop="emit('edit', feeding)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
+            <PencilIcon class="w-3.5 h-3.5" />
+          </button>
+          <button @click.stop="emit('delete', feeding.id)" class="p-0.5 text-gray-300 hover:text-red-500" title="Delete">
+            <TrashIcon class="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   </div>

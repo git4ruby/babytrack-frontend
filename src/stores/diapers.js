@@ -36,6 +36,13 @@ export const useDiapersStore = defineStore('diapers', () => {
     return data.data
   }
 
+  async function updateChange(id, changeData) {
+    const { data } = await diapersApi.updateDiaperChange(id, changeData)
+    const idx = changes.value.findIndex(c => c.id === id)
+    if (idx !== -1) changes.value[idx] = data.data
+    return data.data
+  }
+
   async function removeChange(id) {
     await diapersApi.deleteDiaperChange(id)
     changes.value = changes.value.filter(c => c.id !== id)
@@ -43,6 +50,6 @@ export const useDiapersStore = defineStore('diapers', () => {
 
   return {
     changes, todaySummary, stats, meta, loading,
-    fetchChanges, fetchSummary, fetchStats, logChange, removeChange,
+    fetchChanges, fetchSummary, fetchStats, logChange, updateChange, removeChange,
   }
 })

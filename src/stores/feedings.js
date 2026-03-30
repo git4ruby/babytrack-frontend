@@ -36,6 +36,13 @@ export const useFeedingsStore = defineStore('feedings', () => {
     return data.data
   }
 
+  async function updateFeed(id, feedData) {
+    const { data } = await feedingsApi.updateFeeding(id, feedData)
+    const idx = feedings.value.findIndex(f => f.id === id)
+    if (idx !== -1) feedings.value[idx] = data.data
+    return data.data
+  }
+
   async function removeFeed(id) {
     await feedingsApi.deleteFeeding(id)
     feedings.value = feedings.value.filter((f) => f.id !== id)
@@ -43,6 +50,6 @@ export const useFeedingsStore = defineStore('feedings', () => {
 
   return {
     feedings, todaySummary, lastFeeding, meta, loading,
-    fetchFeedings, fetchSummary, fetchLastFeeding, logFeed, removeFeed,
+    fetchFeedings, fetchSummary, fetchLastFeeding, logFeed, updateFeed, removeFeed,
   }
 })

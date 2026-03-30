@@ -7,7 +7,7 @@ import { useDiapersStore } from '@/stores/diapers'
 import { useUiStore } from '@/stores/ui'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import { PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -210,9 +210,14 @@ onMounted(loadData)
             </div>
             <div class="flex-shrink-0 text-right">
               <p class="text-xs font-medium text-gray-400">{{ dayjs(c.changed_at).format('h:mm A') }}</p>
-              <button @click="handleDelete(c.id)" class="mt-0.5 p-0.5 text-gray-200 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
-                <TrashIcon class="w-3.5 h-3.5" />
-              </button>
+              <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
+                <button @click="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
+                  <PencilIcon class="w-3.5 h-3.5" />
+                </button>
+                <button @click="handleDelete(c.id)" class="p-0.5 text-gray-300 hover:text-red-500" title="Delete">
+                  <TrashIcon class="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
