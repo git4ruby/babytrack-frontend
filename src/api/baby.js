@@ -15,3 +15,11 @@ export function createBaby(data) {
 export function updateBaby(data) {
   return client.patch('/baby', { baby: data })
 }
+
+export function updateBabyById(id, data) {
+  return client.patch(`/babies/${id}`, { baby: data })
+}
+
+export function deleteBaby(id) {
+  return client.delete(`/babies/${id}`)
+}
