@@ -12,7 +12,7 @@ const phoneNumber = ref('')
 const loading = ref(false)
 
 const smsNumber = '+1 571 570 3445'
-const emailAddress = import.meta.env.VITE_INBOUND_EMAIL || 'babytrack.log@gmail.com'
+const emailAddress = import.meta.env.VITE_INBOUND_EMAIL || 'babyfeedtracking@gmail.com'
 
 onMounted(async () => {
   try {
