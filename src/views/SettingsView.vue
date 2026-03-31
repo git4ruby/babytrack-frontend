@@ -29,15 +29,18 @@ const editBabyForm = ref({ id: null, name: '', date_of_birth: '', gender: '', bi
 const editBabyLoading = ref(false)
 
 onMounted(async () => {
-  phoneNumber.value = auth.user?.phone_number || ''
+  try {
+    const { data } = await client.get('/profile')
+    phoneNumber.value = data.data?.phone_number || ''
+  } catch {}
   await babyStore.fetchBabies()
 })
 
 async function savePhone() {
   phoneLoading.value = true
   try {
-    await client.patch('/auth/sign_up', { user: { phone_number: phoneNumber.value || null } })
-    ui.showToast('Phone number saved')
+    await client.patch('/profile', { user: { phone_number: phoneNumber.value || null } })
+    ui.showToast('Phone number(s) saved')
   } catch (e) {
     ui.showToast(e.response?.data?.errors?.[0] || 'Failed to save', 'error')
   } finally {
