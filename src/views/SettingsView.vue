@@ -178,10 +178,10 @@ async function handleDeleteBaby(baby) {
           <span class="text-xs text-gray-400">Save as "BabyTrack"</span>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Your Phone Number</label>
-          <p class="text-xs text-gray-400 mb-2">We match incoming texts to your account by phone number</p>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Family Phone Numbers</label>
+          <p class="text-xs text-gray-400 mb-2">Add phone numbers for anyone who can log via SMS (Mom, Dad, etc). Separate with commas.</p>
           <div class="flex gap-2">
-            <input v-model="phoneNumber" type="tel" placeholder="+1 234 567 8900" class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+            <input v-model="phoneNumber" type="text" placeholder="+12345678900, +19876543210" class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
             <BaseButton :loading="phoneLoading" @click="savePhone">Save</BaseButton>
           </div>
         </div>
