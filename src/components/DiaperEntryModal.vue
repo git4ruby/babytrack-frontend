@@ -117,16 +117,17 @@ watch(() => ui.diaperModalOpen, (open) => {
         </button>
       </div>
 
-      <!-- Time: defaults to now, expandable for custom time -->
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <span class="text-xs text-gray-500">Time: <strong>{{ showTimeField ? '' : 'Now' }}</strong></span>
-          <button @click="showTimeField = !showTimeField" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
-            {{ showTimeField ? 'Use current time' : 'Set custom time' }}
-          </button>
+      <!-- Time: hidden by default, toggle to show -->
+      <div v-if="showTimeField" class="space-y-1">
+        <div class="flex items-center justify-between">
+          <label class="text-sm font-medium text-gray-700">Time</label>
+          <button @click="showTimeField = false" class="text-xs text-gray-400 hover:text-gray-600">Remove time</button>
         </div>
-        <input v-if="showTimeField" v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        <input v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
       </div>
+      <button v-else @click="showTimeField = true; changedAt = dayjs().format('YYYY-MM-DDTHH:mm')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
+        + Add time
+      </button>
 
       <template v-if="showDetails">
         <div>
