@@ -17,6 +17,7 @@ const consistency = ref('')
 const hasRash = ref(false)
 const notes = ref('')
 const showDetails = ref(false)
+const showTimeField = ref(false)
 
 const isEditing = computed(() => !!ui.editingDiaper)
 const modalTitle = computed(() => isEditing.value ? 'Edit Diaper Change' : 'Log Diaper Change')
@@ -51,6 +52,7 @@ function resetForm() {
   hasRash.value = false
   notes.value = ''
   showDetails.value = false
+  showTimeField.value = false
   ui.editingDiaper = null
 }
 
@@ -69,6 +71,7 @@ function populateFromEdit(d) {
   hasRash.value = d.has_rash || false
   notes.value = d.notes || ''
   showDetails.value = (d.diaper_type === 'soiled' || d.diaper_type === 'both')
+  showTimeField.value = true
 }
 
 async function submit() {
@@ -76,7 +79,7 @@ async function submit() {
   loading.value = true
   try {
     const data = {
-      changed_at: new Date(changedAt.value).toISOString(),
+      changed_at: showTimeField.value ? new Date(changedAt.value).toISOString() : new Date().toISOString(),
       diaper_type: diaperType.value,
       stool_color: showDetails.value ? (stoolColor.value || null) : null,
       consistency: showDetails.value ? (consistency.value || null) : null,
@@ -114,9 +117,15 @@ watch(() => ui.diaperModalOpen, (open) => {
         </button>
       </div>
 
+      <!-- Time: defaults to now, expandable for custom time -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
-        <input v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-gray-500">Time: <strong>{{ showTimeField ? '' : 'Now' }}</strong></span>
+          <button @click="showTimeField = !showTimeField" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
+            {{ showTimeField ? 'Use current time' : 'Set custom time' }}
+          </button>
+        </div>
+        <input v-if="showTimeField" v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
       </div>
 
       <template v-if="showDetails">
