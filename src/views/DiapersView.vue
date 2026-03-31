@@ -212,7 +212,7 @@ onMounted(loadData)
               <p v-if="c.notes" class="text-xs text-gray-400 mt-0.5 italic">{{ c.notes }}</p>
             </div>
             <div class="flex-shrink-0 text-right">
-              <p class="text-xs font-medium text-gray-400">{{ dayjs(c.changed_at).format('h:mm A') }}</p>
+              <p class="text-xs font-medium text-gray-400">{{ c.has_time ? dayjs(c.changed_at).format('h:mm A') : '' }}</p>
               <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
                 <button @click="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
                   <PencilIcon class="w-3.5 h-3.5" />

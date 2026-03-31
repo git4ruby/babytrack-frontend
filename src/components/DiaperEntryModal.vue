@@ -79,7 +79,7 @@ async function submit() {
   loading.value = true
   try {
     const data = {
-      changed_at: showTimeField.value ? new Date(changedAt.value).toISOString() : new Date().toISOString(),
+      changed_at: showTimeField.value ? new Date(changedAt.value).toISOString() : null,
       diaper_type: diaperType.value,
       stool_color: showDetails.value ? (stoolColor.value || null) : null,
       consistency: showDetails.value ? (consistency.value || null) : null,
