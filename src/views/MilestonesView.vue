@@ -8,6 +8,7 @@ import BaseModal from '@/components/ui/BaseModal.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { useConfirm } from '@/composables/useConfirm'
+import ExportButton from '@/components/ui/ExportButton.vue'
 
 const { confirm } = useConfirm()
 
@@ -125,9 +126,12 @@ onMounted(fetchMilestones)
   <div class="space-y-5">
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900">Milestones</h1>
-      <BaseButton @click="openCreate">
-        <PlusIcon class="w-4 h-4" /> Add Milestone
-      </BaseButton>
+      <div class="flex items-center gap-2">
+        <ExportButton type="milestones" />
+        <BaseButton @click="openCreate">
+          <PlusIcon class="w-4 h-4" /> Add Milestone
+        </BaseButton>
+      </div>
     </div>
 
     <!-- Stats -->

@@ -9,6 +9,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { useConfirm } from '@/composables/useConfirm'
+import ExportButton from '@/components/ui/ExportButton.vue'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const { confirm } = useConfirm()
@@ -123,9 +124,12 @@ onMounted(loadData)
   <div class="space-y-5">
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900">Diapers</h1>
-      <BaseButton @click="ui.diaperModalOpen = true">
-        <PlusIcon class="w-4 h-4" /> Log Change
-      </BaseButton>
+      <div class="flex items-center gap-2">
+        <ExportButton type="diapers" :from="dateRange.from" :to="dateRange.to" />
+        <BaseButton @click="ui.diaperModalOpen = true">
+          <PlusIcon class="w-4 h-4" /> Log Change
+        </BaseButton>
+      </div>
     </div>
 
     <!-- Range picker -->

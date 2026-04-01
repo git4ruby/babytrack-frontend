@@ -8,6 +8,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { PlusIcon } from '@heroicons/vue/24/outline'
 import { useConfirm } from '@/composables/useConfirm'
+import ExportButton from '@/components/ui/ExportButton.vue'
 
 const feedingsStore = useFeedingsStore()
 const ui = useUiStore()
@@ -115,10 +116,13 @@ onMounted(loadFeedings)
     <!-- Header -->
     <div class="flex items-center justify-between">
       <h1 class="text-2xl font-bold text-gray-900">Feed Log</h1>
-      <BaseButton @click="ui.feedModalOpen = true">
-        <PlusIcon class="w-4 h-4" />
-        Log Feed
-      </BaseButton>
+      <div class="flex items-center gap-2">
+        <ExportButton type="feedings" :from="dateRange.from" :to="dateRange.to" />
+        <BaseButton @click="ui.feedModalOpen = true">
+          <PlusIcon class="w-4 h-4" />
+          Log Feed
+        </BaseButton>
+      </div>
     </div>
 
     <!-- Date Range Selector -->
