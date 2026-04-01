@@ -28,6 +28,11 @@ const phoneError = ref('')
 const phoneLoading = ref(false)
 const showAddPhone = ref(false)
 
+// Password change
+const pwForm = ref({ current: '', newPw: '', confirm: '' })
+const pwError = ref('')
+const pwLoading = ref(false)
+
 // Baby edit
 const editBabyModal = ref(false)
 const editBabyForm = ref({ id: null, name: '', date_of_birth: '', gender: '', birth_weight_grams: '', notes: '' })
@@ -92,6 +97,32 @@ onMounted(async () => {
   } catch {}
   await babyStore.fetchBabies()
 })
+
+async function changePassword() {
+  pwError.value = ''
+  if (pwForm.value.newPw !== pwForm.value.confirm) {
+    pwError.value = "New passwords don't match"
+    return
+  }
+  if (pwForm.value.newPw.length < 6) {
+    pwError.value = 'New password must be at least 6 characters'
+    return
+  }
+  pwLoading.value = true
+  try {
+    await client.patch('/profile/change_password', {
+      current_password: pwForm.value.current,
+      new_password: pwForm.value.newPw,
+      new_password_confirmation: pwForm.value.confirm,
+    })
+    ui.showToast('Password updated')
+    pwForm.value = { current: '', newPw: '', confirm: '' }
+  } catch (e) {
+    pwError.value = e.response?.data?.errors?.[0] || 'Failed to update password'
+  } finally {
+    pwLoading.value = false
+  }
+}
 
 function exportUrl(type) {
   const token = localStorage.getItem('bt_token')
@@ -335,6 +366,27 @@ async function handleDeleteBaby(baby) {
           <span class="text-2xl">📦</span>
           <span class="text-xs font-bold text-purple-700">All Data</span>
         </a>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">Change Password</h2>
+      <div class="space-y-3 max-w-md">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+          <input v-model="pwForm.current" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+          <input v-model="pwForm.newPw" type="password" placeholder="At least 6 characters" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+          <input v-model="pwForm.confirm" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+        </div>
+        <p v-if="pwError" class="text-sm text-red-600 font-medium">{{ pwError }}</p>
+        <BaseButton :loading="pwLoading" :disabled="!pwForm.current || !pwForm.newPw || !pwForm.confirm" @click="changePassword">Update Password</BaseButton>
       </div>
     </div>
 
