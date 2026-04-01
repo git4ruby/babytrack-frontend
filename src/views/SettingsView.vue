@@ -338,6 +338,12 @@ async function handleDeleteBaby(baby) {
       </div>
     </div>
 
+    <!-- Privacy & Legal -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-3">Legal</h2>
+      <router-link to="/privacy" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</router-link>
+    </div>
+
     <!-- Edit Baby Modal -->
     <BaseModal :open="editBabyModal" title="Edit Baby Profile" @close="editBabyModal = false">
       <div class="space-y-4 mt-2">
