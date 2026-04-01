@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import dayjs from 'dayjs'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js'
-import { getWeightLogs, createWeightLog, deleteWeightLog } from '@/api/weightLogs'
+import { getWeightLogs, createWeightLog, deleteWeightLog, getPercentiles } from '@/api/weightLogs'
 import { useBabyStore } from '@/stores/baby'
 import { useUiStore } from '@/stores/ui'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -23,11 +23,13 @@ const logs = ref([])
 const loading = ref(false)
 const showForm = ref(false)
 const formLoading = ref(false)
+const percentileData = ref(null)
+const currentPercentile = ref(null)
 
 // Form
 const form = ref({ recorded_at: dayjs().format('YYYY-MM-DD'), weight_grams: '', height_cm: '', head_circumference_cm: '', measured_by: '', notes: '' })
 
-const weightUnit = ref('g') // g or lb
+const weightUnit = ref('g')
 
 function toDisplay(grams) {
   if (weightUnit.value === 'lb') return (grams / 453.592).toFixed(2) + ' lb'
@@ -36,27 +38,55 @@ function toDisplay(grams) {
 }
 
 const chartData = computed(() => {
-  if (logs.value.length < 2) return null
+  if (logs.value.length < 1) return null
   const sorted = [...logs.value].sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at))
+
+  const datasets = []
+
+  // WHO percentile bands
+  if (percentileData.value?.curves) {
+    const bandColors = { P3: '#fee2e2', P15: '#fef3c7', P50: '#d1fae5', P85: '#fef3c7', P97: '#fee2e2' }
+    const lineColors = { P3: '#fca5a5', P15: '#fcd34d', P50: '#6ee7b7', P85: '#fcd34d', P97: '#fca5a5' }
+    for (const [label, points] of Object.entries(percentileData.value.curves)) {
+      datasets.push({
+        label,
+        data: points.map(p => ({ x: p.age_days, y: p.weight_grams })),
+        borderColor: lineColors[label],
+        borderWidth: 1,
+        borderDash: label === 'P50' ? [] : [4, 4],
+        pointRadius: 0,
+        fill: false,
+        tension: 0.4,
+      })
+    }
+  }
+
+  // Baby's actual weight
+  datasets.push({
+    label: `${babyStore.baby?.name || 'Baby'}`,
+    data: sorted.map(l => ({
+      x: babyStore.baby ? Math.round((new Date(l.recorded_at) - new Date(babyStore.baby.date_of_birth)) / 86400000) : 0,
+      y: l.weight_grams,
+    })),
+    borderColor: 'rgb(34, 197, 94)',
+    backgroundColor: 'rgb(34, 197, 94)',
+    borderWidth: 3,
+    pointRadius: 6,
+    pointBackgroundColor: 'rgb(34, 197, 94)',
+    fill: false,
+    tension: 0.3,
+  })
+
   return {
-    data: {
-      labels: sorted.map(l => dayjs(l.recorded_at).format('MMM D')),
-      datasets: [{
-        label: 'Weight (g)',
-        data: sorted.map(l => l.weight_grams),
-        borderColor: 'rgb(34, 197, 94)',
-        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: 'rgb(34, 197, 94)',
-      }],
-    },
+    data: { datasets },
     options: {
       responsive: true,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { usePointStyle: true, pointStyle: 'line', font: { size: 10 } } },
+      },
       scales: {
-        y: { title: { display: true, text: 'grams' } },
+        x: { type: 'linear', title: { display: true, text: 'Age (days)' }, min: 0 },
+        y: { title: { display: true, text: 'Weight (grams)' } },
       },
     },
   }
@@ -79,6 +109,13 @@ async function fetchLogs() {
   try {
     const { data } = await getWeightLogs()
     logs.value = data.data
+    // Fetch WHO percentile data
+    const { data: pData } = await getPercentiles()
+    percentileData.value = pData.data
+    if (pData.data?.measurements?.length) {
+      const latest = pData.data.measurements[pData.data.measurements.length - 1]
+      currentPercentile.value = latest.percentile
+    }
   } finally {
     loading.value = false
   }
@@ -141,7 +178,12 @@ onMounted(fetchLogs)
           {{ weightChange >= 0 ? '+' : '' }}{{ weightChange }}g
         </p>
       </div>
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <div v-if="currentPercentile" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <p class="text-sm text-gray-500">WHO Percentile</p>
+        <p class="text-2xl font-bold text-blue-600 mt-1">{{ currentPercentile }}th</p>
+        <p class="text-xs text-gray-400 mt-0.5">weight-for-age</p>
+      </div>
+      <div v-else class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
         <p class="text-sm text-gray-500">Measurements</p>
         <p class="text-2xl font-bold text-gray-900 mt-1">{{ logs.length }}</p>
       </div>

@@ -308,6 +308,30 @@ async function handleDeleteBaby(baby) {
       </div>
     </div>
 
+    <!-- Export Data -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-1">Export Data</h2>
+      <p class="text-sm text-gray-500 mb-5">Download your data as CSV files for pediatrician visits or personal records.</p>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <a :href="`/api/v1/exports/feedings?baby_id=${babyStore.baby?.id}`" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-center">
+          <span class="text-2xl">🍼</span>
+          <span class="text-xs font-bold text-blue-700">Feedings</span>
+        </a>
+        <a :href="`/api/v1/exports/diapers?baby_id=${babyStore.baby?.id}`" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-cyan-50 hover:bg-cyan-100 transition text-center">
+          <span class="text-2xl">🧷</span>
+          <span class="text-xs font-bold text-cyan-700">Diapers</span>
+        </a>
+        <a :href="`/api/v1/exports/weight?baby_id=${babyStore.baby?.id}`" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition text-center">
+          <span class="text-2xl">⚖️</span>
+          <span class="text-xs font-bold text-emerald-700">Weight</span>
+        </a>
+        <a :href="`/api/v1/exports/all?baby_id=${babyStore.baby?.id}`" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-purple-50 hover:bg-purple-100 transition text-center">
+          <span class="text-2xl">📦</span>
+          <span class="text-xs font-bold text-purple-700">All Data</span>
+        </a>
+      </div>
+    </div>
+
     <!-- Edit Baby Modal -->
     <BaseModal :open="editBabyModal" title="Edit Baby Profile" @close="editBabyModal = false">
       <div class="space-y-4 mt-2">

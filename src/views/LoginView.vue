@@ -197,6 +197,9 @@ function switchMode() {
               {{ mode === 'login' ? 'Sign Up' : 'Sign In' }}
             </button>
           </p>
+        <p class="text-xs text-gray-400 mt-3">
+          <router-link to="/privacy" class="hover:text-gray-600">Privacy Policy</router-link>
+        </p>
         </div>
       </div>
     </div>

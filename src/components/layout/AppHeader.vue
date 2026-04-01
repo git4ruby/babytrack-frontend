@@ -4,13 +4,15 @@ import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useBabyStore } from '@/stores/baby'
 import { useUiStore } from '@/stores/ui'
-import { Bars3Icon, PlusIcon, ArrowRightOnRectangleIcon } from '@heroicons/vue/24/outline'
+import { useDarkMode } from '@/composables/useDarkMode'
+import { Bars3Icon, PlusIcon, ArrowRightOnRectangleIcon, SunIcon, MoonIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
 const babyStore = useBabyStore()
 const ui = useUiStore()
+const { isDark, toggle: toggleDark } = useDarkMode()
 
 const pageTitle = computed(() => {
   const titles = { Dashboard: 'Dashboard', Feedings: 'Feed Log', Analytics: 'Analytics', Diapers: 'Diapers', Milestones: 'Milestones', MilkStorage: 'Milk Storage', Weight: 'Weight', Vaccinations: 'Vaccinations', Appointments: 'Appointments', Settings: 'Settings' }
@@ -24,17 +26,15 @@ async function handleLogout() {
 </script>
 
 <template>
-  <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-gray-200/60">
+  <header class="sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200/60 dark:border-gray-700/60">
     <div class="flex items-center justify-between h-14 px-4 lg:px-6">
-      <!-- Left -->
       <div class="flex items-center gap-3">
-        <button @click="ui.toggleSidebar()" class="lg:hidden p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
+        <button @click="ui.toggleSidebar()" class="lg:hidden p-1.5 -ml-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
           <Bars3Icon class="w-5 h-5" />
         </button>
-        <h1 class="text-base font-bold text-gray-900">{{ pageTitle }}</h1>
+        <h1 class="text-base font-bold text-gray-900 dark:text-white">{{ pageTitle }}</h1>
       </div>
 
-      <!-- Right: actions -->
       <div class="flex items-center gap-2">
         <button
           @click="ui.feedModalOpen = true"
@@ -46,15 +46,23 @@ async function handleLogout() {
 
         <button
           @click="ui.milkModalOpen = true"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-semibold rounded-lg transition"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 text-xs font-semibold rounded-lg transition"
         >
-          🧊
-          <span class="hidden sm:inline">Store Milk</span>
+          🧊 <span class="hidden sm:inline">Store Milk</span>
+        </button>
+
+        <button
+          @click="toggleDark"
+          class="p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          :title="isDark ? 'Light mode' : 'Dark mode'"
+        >
+          <MoonIcon v-if="!isDark" class="w-4 h-4" />
+          <SunIcon v-else class="w-4 h-4" />
         </button>
 
         <button
           @click="handleLogout"
-          class="p-1.5 text-gray-300 hover:text-gray-500 transition rounded-lg hover:bg-gray-100"
+          class="p-1.5 text-gray-300 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 transition rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
           title="Sign out"
         >
           <ArrowRightOnRectangleIcon class="w-4 h-4" />

@@ -26,7 +26,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-gray-950 dark:text-gray-100">
     <AppSidebar class="hidden lg:block" />
 
     <div class="lg:pl-64">

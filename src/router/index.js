@@ -8,6 +8,11 @@ const routes = [
     meta: { guest: true },
   },
   {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/PrivacyView.vue'),
+  },
+  {
     path: '/setup',
     name: 'BabySetup',
     component: () => import('@/views/BabySetupView.vue'),
