@@ -6,13 +6,21 @@ import { useUiStore } from '@/stores/ui'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import { PlusIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { useConfirm } from '@/composables/useConfirm'
+import { updateMilkStash, deleteMilkStash } from '@/api/milkStashes'
 
 const milkStore = useMilkStore()
 const ui = useUiStore()
+const { confirm } = useConfirm()
 
 const activeFilter = ref('')
 const actionModal = ref({ open: false, stash: null, action: '' })
+
+// Edit modal
+const editModal = ref(false)
+const editForm = ref({ id: null, label: '', volume_ml: '', remaining_ml: '', storage_type: '', stored_at: '', notes: '' })
+const editLoading = ref(false)
 const actionVolume = ref('')
 const actionReason = ref('')
 const actionDestination = ref('fridge')
@@ -75,6 +83,54 @@ async function submitAction() {
     ui.showToast(e.response?.data?.error || 'Action failed', 'error')
   } finally {
     actionLoading.value = false
+  }
+}
+
+function openEdit(stash) {
+  editForm.value = {
+    id: stash.id,
+    label: stash.label || '',
+    volume_ml: stash.volume_ml,
+    remaining_ml: stash.remaining_ml,
+    storage_type: stash.storage_type,
+    stored_at: dayjs(stash.stored_at).format('YYYY-MM-DDTHH:mm'),
+    notes: stash.notes || '',
+  }
+  editModal.value = true
+}
+
+async function saveEdit() {
+  editLoading.value = true
+  try {
+    await updateMilkStash(editForm.value.id, {
+      label: editForm.value.label || null,
+      volume_ml: parseInt(editForm.value.volume_ml),
+      remaining_ml: parseInt(editForm.value.remaining_ml),
+      storage_type: editForm.value.storage_type,
+      stored_at: new Date(editForm.value.stored_at).toISOString(),
+      notes: editForm.value.notes || null,
+    })
+    ui.showToast('Milk stash updated')
+    editModal.value = false
+    milkStore.fetchStashes()
+    milkStore.fetchInventory()
+  } catch (e) {
+    ui.showToast(e.response?.data?.errors?.[0] || 'Failed to update', 'error')
+  } finally {
+    editLoading.value = false
+  }
+}
+
+async function handleDelete(stash) {
+  const ok = await confirm({ title: 'Delete Milk Stash', message: `Delete "${stash.label || 'this stash'}" (${stash.remaining_ml}ml remaining)?`, confirmLabel: 'Delete' })
+  if (!ok) return
+  try {
+    await deleteMilkStash(stash.id)
+    ui.showToast('Stash deleted')
+    milkStore.fetchStashes()
+    milkStore.fetchInventory()
+  } catch (e) {
+    ui.showToast('Failed to delete', 'error')
   }
 }
 
@@ -197,6 +253,18 @@ onMounted(() => {
           >
             Discard
           </button>
+          <button
+            @click="openEdit(stash)"
+            class="py-2 px-3 text-xs font-medium text-gray-500 bg-gray-50 hover:bg-gray-100 rounded-lg transition"
+          >
+            <PencilIcon class="w-3.5 h-3.5 inline" /> Edit
+          </button>
+          <button
+            @click="handleDelete(stash)"
+            class="py-2 px-3 text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+          >
+            <TrashIcon class="w-3.5 h-3.5 inline" />
+          </button>
         </div>
       </div>
     </div>
@@ -300,6 +368,47 @@ onMounted(() => {
         >
           {{ actionModal.action === 'consume' ? 'Use Milk' : actionModal.action === 'discard' ? 'Discard' : 'Transfer' }}
         </BaseButton>
+      </div>
+    </BaseModal>
+
+    <!-- Edit Stash Modal -->
+    <BaseModal :open="editModal" title="Edit Milk Stash" @close="editModal = false">
+      <div class="space-y-4 mt-2">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Label</label>
+          <input v-model="editForm.label" type="text" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Volume (ml)</label>
+            <input v-model="editForm.volume_ml" type="number" min="1" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Remaining (ml)</label>
+            <input v-model="editForm.remaining_ml" type="number" min="0" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Storage Type</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button v-for="opt in storageConfig" :key="opt" @click="editForm.storage_type = Object.entries(storageConfig).find(([k,v]) => v === opt)?.[0]"
+              :class="['flex flex-col items-center gap-1 py-2 rounded-lg border-2 transition text-center text-xs',
+                editForm.storage_type === Object.entries(storageConfig).find(([k,v]) => v === opt)?.[0]
+                  ? 'border-blue-500 bg-blue-50' : 'border-gray-200']">
+              <span>{{ opt.icon }}</span>
+              <span>{{ opt.label }}</span>
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Stored At</label>
+          <input v-model="editForm.stored_at" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <input v-model="editForm.notes" type="text" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        </div>
+        <BaseButton variant="primary" block :loading="editLoading" @click="saveEdit">Save Changes</BaseButton>
       </div>
     </BaseModal>
   </div>

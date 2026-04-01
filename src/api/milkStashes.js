@@ -24,6 +24,14 @@ export function transferMilkStash(id, data) {
   return client.post(`/milk_stashes/${id}/transfer`, data)
 }
 
+export function updateMilkStash(id, data) {
+  return client.patch(`/milk_stashes/${id}`, { milk_stash: data })
+}
+
+export function deleteMilkStash(id) {
+  return client.delete(`/milk_stashes/${id}`)
+}
+
 export function getMilkInventory() {
   return client.get('/milk_stashes/inventory')
 }
