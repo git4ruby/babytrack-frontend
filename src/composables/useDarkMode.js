@@ -8,7 +8,7 @@ export function useDarkMode() {
     if (stored !== null) {
       isDark.value = stored === 'true'
     } else {
-      isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches
+      isDark.value = false // default to light mode
     }
     apply()
   }
