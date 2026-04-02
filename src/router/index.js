@@ -13,6 +13,16 @@ const routes = [
     component: () => import('@/views/PrivacyView.vue'),
   },
   {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: () => import('@/views/ForgotPasswordView.vue'),
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: () => import('@/views/ResetPasswordView.vue'),
+  },
+  {
     path: '/setup',
     name: 'BabySetup',
     component: () => import('@/views/BabySetupView.vue'),
@@ -42,6 +52,11 @@ const routes = [
         path: 'milk-storage',
         name: 'MilkStorage',
         component: () => import('@/views/MilkStorageView.vue'),
+      },
+      {
+        path: 'sleep',
+        name: 'Sleep',
+        component: () => import('@/views/SleepView.vue'),
       },
       {
         path: 'diapers',

@@ -123,6 +123,9 @@ function switchMode() {
           >
             {{ loading ? 'Signing in...' : 'Sign In' }}
           </button>
+          <div class="text-center mt-2">
+            <router-link to="/forgot-password" class="text-xs text-gray-400 hover:text-blue-600">Forgot password?</router-link>
+          </div>
         </form>
 
         <!-- Signup Form -->
