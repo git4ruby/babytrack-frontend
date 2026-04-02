@@ -18,7 +18,7 @@ const label = ref('')
 const notes = ref('')
 
 const storageOptions = [
-  { value: 'room_temp', label: 'Room Temp', icon: '🌡️', expiry: '4 hrs' },
+  { value: 'room_temp', label: 'Room Temp', icon: '🌡️', expiry: '8 hrs' },
   { value: 'fridge', label: 'Fridge', icon: '❄️', expiry: '4 days' },
   { value: 'freezer', label: 'Freezer', icon: '🧊', expiry: '6 months' },
 ]
