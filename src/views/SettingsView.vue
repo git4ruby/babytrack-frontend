@@ -133,14 +133,8 @@ async function linkTelegram() {
   telegramLinking.value = true
   try {
     const { data } = await client.post('/profile/telegram_link')
-    window.open(data.data.link, '_blank')
-    ui.showToast('Opening Telegram — click Start in the bot to link your account')
-    // Poll for link completion
-    setTimeout(async () => {
-      const { data: profile } = await client.get('/profile')
-      telegramLinked.value = profile.data?.telegram_linked || false
-      if (telegramLinked.value) ui.showToast('Telegram linked!')
-    }, 10000)
+    // Direct redirect works better on mobile for opening Telegram app
+    window.location.href = data.data.link
   } catch (e) {
     ui.showToast('Failed to generate link', 'error')
   } finally {
