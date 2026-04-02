@@ -11,6 +11,7 @@ import {
   CalendarDaysIcon,
   SparklesIcon,
   StarIcon,
+  MoonIcon,
   Cog6ToothIcon,
 } from '@heroicons/vue/24/outline'
 
@@ -21,6 +22,7 @@ const navItems = [
   { name: 'Dashboard', path: '/', icon: HomeIcon },
   { name: 'Feed Log', path: '/feedings', icon: ClipboardDocumentListIcon },
   { name: 'Analytics', path: '/analytics', icon: ChartBarIcon },
+  { name: 'Sleep', path: '/sleep', icon: MoonIcon },
   { name: 'Diapers', path: '/diapers', icon: SparklesIcon },
   { name: 'Milk Storage', path: '/milk-storage', icon: BeakerIcon },
   { name: 'Milestones', path: '/milestones', icon: StarIcon },
