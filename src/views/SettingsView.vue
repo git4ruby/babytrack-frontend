@@ -27,6 +27,7 @@ const newLabel = ref('')
 const phoneError = ref('')
 const phoneLoading = ref(false)
 const showAddPhone = ref(false)
+const smsEnabled = ref(false)
 
 // Password change
 const pwForm = ref({ current: '', newPw: '', confirm: '' })
@@ -94,6 +95,7 @@ onMounted(async () => {
   try {
     const { data } = await client.get('/profile')
     phoneNumbers.value = parsePhoneNumbers(data.data?.phone_number)
+    smsEnabled.value = data.data?.sms_enabled || false
   } catch {}
   await babyStore.fetchBabies()
 })
@@ -200,8 +202,8 @@ async function handleDeleteBaby(baby) {
 
     <!-- SMS / Email Logging -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-1">Log via SMS or Email</h2>
-      <p class="text-sm text-gray-500 mb-6">Skip the app — just send a text or email to log feeds, diapers, milestones and more.</p>
+      <h2 class="text-lg font-bold text-gray-900 mb-1">Log via {{ smsEnabled ? 'SMS or ' : '' }}Email</h2>
+      <p class="text-sm text-gray-500 mb-6">Skip the app — just send {{ smsEnabled ? 'a text or ' : '' }}an email to log feeds, diapers, milestones and more.</p>
 
       <!-- How it works -->
       <div class="bg-slate-50 rounded-xl p-5 mb-6">
@@ -237,8 +239,8 @@ async function handleDeleteBaby(baby) {
         </div>
       </div>
 
-      <!-- SMS Section -->
-      <div class="border-t border-gray-100 pt-6">
+      <!-- SMS Section (premium only) -->
+      <div v-if="smsEnabled" class="border-t border-gray-100 pt-6">
         <div class="flex items-center gap-3 mb-4">
           <span class="text-2xl">📱</span>
           <div>
