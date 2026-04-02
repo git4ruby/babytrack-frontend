@@ -28,6 +28,8 @@ const phoneError = ref('')
 const phoneLoading = ref(false)
 const showAddPhone = ref(false)
 const smsEnabled = ref(false)
+const telegramLinked = ref(false)
+const telegramLinking = ref(false)
 
 // Password change
 const pwForm = ref({ current: '', newPw: '', confirm: '' })
@@ -96,6 +98,7 @@ onMounted(async () => {
     const { data } = await client.get('/profile')
     phoneNumbers.value = parsePhoneNumbers(data.data?.phone_number)
     smsEnabled.value = data.data?.sms_enabled || false
+    telegramLinked.value = data.data?.telegram_linked || false
   } catch {}
   await babyStore.fetchBabies()
 })
@@ -123,6 +126,37 @@ async function changePassword() {
     pwError.value = e.response?.data?.errors?.[0] || 'Failed to update password'
   } finally {
     pwLoading.value = false
+  }
+}
+
+async function linkTelegram() {
+  telegramLinking.value = true
+  try {
+    const { data } = await client.post('/profile/telegram_link')
+    window.open(data.data.link, '_blank')
+    ui.showToast('Opening Telegram — click Start in the bot to link your account')
+    // Poll for link completion
+    setTimeout(async () => {
+      const { data: profile } = await client.get('/profile')
+      telegramLinked.value = profile.data?.telegram_linked || false
+      if (telegramLinked.value) ui.showToast('Telegram linked!')
+    }, 10000)
+  } catch (e) {
+    ui.showToast('Failed to generate link', 'error')
+  } finally {
+    telegramLinking.value = false
+  }
+}
+
+async function unlinkTelegram() {
+  const ok = await confirmDialog({ title: 'Unlink Telegram', message: 'You will no longer be able to log via Telegram.', confirmLabel: 'Unlink' })
+  if (!ok) return
+  try {
+    await client.delete('/profile/telegram_unlink')
+    telegramLinked.value = false
+    ui.showToast('Telegram unlinked')
+  } catch (e) {
+    ui.showToast('Failed to unlink', 'error')
   }
 }
 
@@ -344,6 +378,33 @@ async function handleDeleteBaby(baby) {
           <span class="text-xs text-gray-400">No setup needed</span>
         </div>
         <p class="text-xs text-gray-400 mt-2">Just send from the same email you signed up with: <strong>{{ auth.user?.email }}</strong></p>
+      </div>
+
+      <!-- Telegram Section -->
+      <div class="border-t border-gray-100 pt-6 mt-6">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-2xl">✈️</span>
+          <div>
+            <h3 class="text-sm font-bold text-gray-900">Telegram</h3>
+            <p class="text-xs text-gray-500">Free, instant, unlimited — message @LullaTrackBot to log</p>
+          </div>
+        </div>
+
+        <div v-if="telegramLinked" class="space-y-3">
+          <div class="bg-green-50 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-green-500"></span>
+              <span class="text-sm font-medium text-green-800">Telegram linked</span>
+            </div>
+            <button @click="unlinkTelegram" class="text-xs text-red-500 hover:text-red-700 font-medium">Unlink</button>
+          </div>
+          <p class="text-xs text-gray-400">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
+        </div>
+
+        <div v-else class="space-y-3">
+          <p class="text-sm text-gray-600">Link your Telegram account to log baby data via the LullaTrack bot — free and instant.</p>
+          <BaseButton :loading="telegramLinking" @click="linkTelegram">Link Telegram</BaseButton>
+        </div>
       </div>
     </div>
 
