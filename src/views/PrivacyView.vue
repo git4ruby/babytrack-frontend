@@ -51,7 +51,7 @@
           <div class="space-y-2 pl-9">
             <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 flex items-start gap-3">
               <span class="text-lg">📱</span>
-              <div><p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Twilio</p><p class="text-xs text-gray-500 dark:text-gray-400">Receives and routes inbound SMS messages</p></div>
+              <div><p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Twilio</p><p class="text-xs text-gray-500 dark:text-gray-400">Receives and routes inbound SMS messages (premium feature, not enabled by default)</p></div>
             </div>
             <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 flex items-start gap-3">
               <span class="text-lg">🤖</span>

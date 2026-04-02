@@ -211,7 +211,7 @@ async function handleDeleteBaby(baby) {
         <div class="space-y-3 text-sm text-gray-600">
           <div class="flex items-start gap-3">
             <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">1</span>
-            <p>Send a text or email with what you want to log</p>
+            <p>Send {{ smsEnabled ? 'a text or ' : '' }}an email with what you want to log</p>
           </div>
           <div class="flex items-start gap-3">
             <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">2</span>
