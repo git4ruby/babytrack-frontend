@@ -390,9 +390,10 @@ async function handleDeleteBaby(baby) {
               <span class="w-2 h-2 rounded-full bg-green-500"></span>
               <span class="text-sm font-medium text-green-800">Telegram linked</span>
             </div>
-            <button @click="unlinkTelegram" class="text-xs text-red-500 hover:text-red-700 font-medium">Unlink</button>
+            <button @click="unlinkTelegram" class="text-xs text-red-500 hover:text-red-700 font-medium">Unlink all</button>
           </div>
           <p class="text-xs text-gray-400">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
+          <BaseButton variant="secondary" size="sm" :loading="telegramLinking" @click="linkTelegram">+ Link another family member</BaseButton>
         </div>
 
         <div v-else class="space-y-3">
