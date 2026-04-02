@@ -1,6 +1,8 @@
 <script setup>
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBabyStore } from '@/stores/baby'
+import { useAuthStore } from '@/stores/auth'
 import {
   HomeIcon,
   ClipboardDocumentListIcon,
@@ -17,6 +19,8 @@ import {
 
 const route = useRoute()
 const babyStore = useBabyStore()
+const auth = useAuthStore()
+const isAdmin = computed(() => auth.user?.id === 1)
 
 const navItems = [
   { name: 'Dashboard', path: '/', icon: HomeIcon },
@@ -69,6 +73,11 @@ function isActive(path) {
           :class="['w-5 h-5 transition-colors', isActive(item.path) ? 'text-sky-400' : 'text-slate-500']"
         />
         {{ item.name }}
+      </router-link>
+      <router-link v-if="isAdmin" to="/admin"
+        :class="['flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 mt-2 border-t border-white/10 pt-3',
+          isActive('/admin') ? 'bg-white/10 text-white shadow-lg shadow-black/10' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200']">
+        <span class="w-5 h-5 text-center text-xs">👑</span> Admin
       </router-link>
     </nav>
 

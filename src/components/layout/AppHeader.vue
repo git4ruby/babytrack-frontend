@@ -15,7 +15,7 @@ const ui = useUiStore()
 const { isDark, toggle: toggleDark } = useDarkMode()
 
 const pageTitle = computed(() => {
-  const titles = { Dashboard: 'Dashboard', Feedings: 'Feed Log', Analytics: 'Analytics', Sleep: 'Sleep', Diapers: 'Diapers', Milestones: 'Milestones', MilkStorage: 'Milk Storage', Weight: 'Weight', Vaccinations: 'Vaccinations', Appointments: 'Appointments', Settings: 'Settings' }
+  const titles = { Dashboard: 'Dashboard', Feedings: 'Feed Log', Analytics: 'Analytics', Sleep: 'Sleep', Diapers: 'Diapers', Milestones: 'Milestones', MilkStorage: 'Milk Storage', Weight: 'Weight', Vaccinations: 'Vaccinations', Appointments: 'Appointments', Settings: 'Settings', Admin: 'Admin' }
   return titles[route.name] || 'BabyTrack'
 })
 

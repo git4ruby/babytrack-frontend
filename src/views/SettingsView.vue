@@ -37,6 +37,15 @@ const pwForm = ref({ current: '', newPw: '', confirm: '' })
 const pwError = ref('')
 const pwLoading = ref(false)
 
+// Baby sharing
+const shares = ref([])
+const shareEmail = ref('')
+const shareLoading = ref(false)
+
+// Email verification
+const emailVerified = ref(true)
+const verifyLoading = ref(false)
+
 // Baby edit
 const editBabyModal = ref(false)
 const editBabyForm = ref({ id: null, name: '', date_of_birth: '', gender: '', birth_weight_grams: '', notes: '' })
@@ -101,6 +110,13 @@ onMounted(async () => {
     smsEnabled.value = data.data?.sms_enabled || false
     telegramLinked.value = data.data?.telegram_linked || false
     telegramAccounts.value = data.data?.telegram_accounts || []
+    emailVerified.value = data.data?.email_verified !== false
+  } catch {}
+
+  // Load shares
+  try {
+    const { data: sharesData } = await client.get('/baby_shares')
+    shares.value = sharesData.data
   } catch {}
   await babyStore.fetchBabies()
 })
@@ -157,6 +173,40 @@ async function unlinkTelegram(chatId) {
   } catch (e) {
     ui.showToast('Failed to unlink', 'error')
   }
+}
+
+async function inviteToShare() {
+  if (!shareEmail.value) return
+  shareLoading.value = true
+  try {
+    const { data } = await client.post('/baby_shares', { email: shareEmail.value })
+    shares.value.push(data.data)
+    shareEmail.value = ''
+    ui.showToast('Invite sent!')
+  } catch (e) {
+    ui.showToast(e.response?.data?.errors?.[0] || 'Failed to invite', 'error')
+  } finally {
+    shareLoading.value = false
+  }
+}
+
+async function revokeShare(id) {
+  const ok = await confirmDialog({ title: 'Revoke Access', message: 'Remove this person\'s access to your baby?', confirmLabel: 'Revoke' })
+  if (!ok) return
+  try {
+    await client.delete(`/baby_shares/${id}`)
+    shares.value = shares.value.filter(s => s.id !== id)
+    ui.showToast('Access revoked')
+  } catch { ui.showToast('Failed', 'error') }
+}
+
+async function sendVerification() {
+  verifyLoading.value = true
+  try {
+    await client.post('/email/send_verification')
+    ui.showToast('Verification email sent — check your inbox')
+  } catch { ui.showToast('Failed to send', 'error') }
+  finally { verifyLoading.value = false }
 }
 
 function exportUrl(type) {
@@ -230,6 +280,44 @@ async function handleDeleteBaby(baby) {
             <button @click="handleDeleteBaby(baby)" class="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition"><TrashIcon class="w-4 h-4" /></button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Email Verification Banner -->
+    <div v-if="!emailVerified" class="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center justify-between">
+      <div>
+        <p class="text-sm font-bold text-amber-800">Verify your email</p>
+        <p class="text-xs text-amber-600 mt-0.5">Verify {{ auth.user?.email }} to enable all features.</p>
+      </div>
+      <BaseButton size="sm" :loading="verifyLoading" @click="sendVerification">Send Verification</BaseButton>
+    </div>
+
+    <!-- Baby Sharing -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <h2 class="text-lg font-bold text-gray-900 mb-1">Share Baby Access</h2>
+      <p class="text-sm text-gray-500 mb-4">Invite family members to log data for your baby without sharing your login.</p>
+
+      <!-- Existing shares -->
+      <div v-if="shares.length" class="space-y-2 mb-4">
+        <div v-for="share in shares" :key="share.id" class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ share.user_name || share.invite_email }}</p>
+            <p class="text-xs text-gray-400">{{ share.status === 'accepted' ? 'Active' : 'Invite pending' }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', share.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700']">
+              {{ share.status }}
+            </span>
+            <button @click="revokeShare(share.id)" class="text-xs text-red-500 hover:text-red-700 font-medium">Revoke</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invite form -->
+      <div class="flex gap-2">
+        <input v-model="shareEmail" type="email" placeholder="Email address to invite"
+          class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+        <BaseButton :loading="shareLoading" :disabled="!shareEmail" @click="inviteToShare">Invite</BaseButton>
       </div>
     </div>
 
