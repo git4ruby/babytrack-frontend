@@ -18,6 +18,16 @@ const routes = [
     component: () => import('@/views/ForgotPasswordView.vue'),
   },
   {
+    path: '/accept-invite',
+    name: 'AcceptInvite',
+    component: () => import('@/views/AcceptInviteView.vue'),
+  },
+  {
+    path: '/verify-email',
+    name: 'VerifyEmail',
+    component: () => import('@/views/VerifyEmailView.vue'),
+  },
+  {
     path: '/reset-password',
     name: 'ResetPassword',
     component: () => import('@/views/ResetPasswordView.vue'),
@@ -87,6 +97,11 @@ const routes = [
         path: 'settings',
         name: 'Settings',
         component: () => import('@/views/SettingsView.vue'),
+      },
+      {
+        path: 'admin',
+        name: 'Admin',
+        component: () => import('@/views/AdminView.vue'),
       },
     ],
   },
