@@ -26,7 +26,7 @@ async function handleLogout() {
 </script>
 
 <template>
-  <header class="sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200/60 dark:border-gray-700/60">
+  <header class="sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200/60 dark:border-gray-700/60" style="z-index: 30;">
     <div class="flex items-center justify-between h-14 px-4 lg:px-6">
       <div class="flex items-center gap-3">
         <button @click="ui.toggleSidebar()" class="lg:hidden p-1.5 -ml-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">

@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useBabyStore } from '@/stores/baby'
+import { useUiStore } from '@/stores/ui'
 import { useConfirm } from '@/composables/useConfirm'
 import AppSidebar from './AppSidebar.vue'
 import AppHeader from './AppHeader.vue'
@@ -13,8 +14,15 @@ import MilkStashModal from '@/components/MilkStashModal.vue'
 import DiaperEntryModal from '@/components/DiaperEntryModal.vue'
 
 const router = useRouter()
+const route = useRoute()
 const babyStore = useBabyStore()
+const ui = useUiStore()
 const { isOpen: confirmOpen, title: confirmTitle, message: confirmMessage, confirmLabel, variant: confirmVariant, handleConfirm, handleCancel } = useConfirm()
+
+// Close mobile sidebar on navigation
+watch(() => route.path, () => {
+  ui.sidebarOpen = false
+})
 
 onMounted(async () => {
   await babyStore.fetchBaby()
@@ -27,7 +35,16 @@ onMounted(async () => {
 
 <template>
   <div class="min-h-screen bg-slate-50 dark:bg-gray-950 dark:text-gray-100">
+    <!-- Desktop sidebar -->
     <AppSidebar class="hidden lg:block" />
+
+    <!-- Mobile sidebar overlay -->
+    <Transition name="fade">
+      <div v-if="ui.sidebarOpen" class="fixed inset-0 bg-black/50 z-40 lg:hidden" @click="ui.sidebarOpen = false"></div>
+    </Transition>
+    <Transition name="slide">
+      <AppSidebar v-if="ui.sidebarOpen" class="lg:hidden" style="z-index: 9999;" />
+    </Transition>
 
     <div class="lg:pl-64">
       <AppHeader />
@@ -57,3 +74,10 @@ onMounted(async () => {
     <ToastContainer />
   </div>
 </template>
+
+<style>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+.slide-enter-active, .slide-leave-active { transition: transform 0.25s ease; }
+.slide-enter-from, .slide-leave-to { transform: translateX(-100%); }
+</style>

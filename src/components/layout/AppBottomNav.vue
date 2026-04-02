@@ -25,19 +25,20 @@ function isActive(path) {
 </script>
 
 <template>
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 z-30 safe-bottom">
-    <div class="flex items-center justify-around h-16">
+  <nav class="fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 safe-bottom" style="z-index: 9999;">
+    <div class="flex items-stretch justify-around">
       <router-link
         v-for="item in navItems"
         :key="item.path"
         :to="item.path"
         :class="[
-          'flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors',
+          'flex flex-col items-center justify-center gap-0.5 py-3 px-2 min-w-0 flex-1 text-[11px] font-medium transition-colors',
           isActive(item.path) ? 'text-blue-600' : 'text-gray-400'
         ]"
+        style="-webkit-tap-highlight-color: transparent;"
       >
         <component :is="item.icon" class="w-5 h-5" />
-        {{ item.name }}
+        <span class="truncate">{{ item.name }}</span>
       </router-link>
     </div>
   </nav>
