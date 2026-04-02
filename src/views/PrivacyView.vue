@@ -24,7 +24,7 @@
             <li class="flex items-start gap-2"><span class="text-blue-400 mt-1">•</span>Baby profiles (name, date of birth, gender)</li>
             <li class="flex items-start gap-2"><span class="text-blue-400 mt-1">•</span>Feeding logs, diaper changes, weight measurements</li>
             <li class="flex items-start gap-2"><span class="text-blue-400 mt-1">•</span>Milk storage, vaccinations, appointments, milestones</li>
-            <li class="flex items-start gap-2"><span class="text-blue-400 mt-1">•</span>Inbound SMS and email messages for logging</li>
+            <li class="flex items-start gap-2"><span class="text-blue-400 mt-1">•</span>Inbound SMS, email, and Telegram messages for logging</li>
           </ul>
         </section>
 
@@ -35,7 +35,7 @@
           </h2>
           <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400 pl-9">
             <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">•</span>To provide the baby tracking service</li>
-            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">•</span>To process SMS/email messages and create records</li>
+            <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">•</span>To process SMS, email, and Telegram messages and create records</li>
             <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">•</span>To send confirmation emails and reminders</li>
           </ul>
           <div class="mt-3 ml-9 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-3">
@@ -60,6 +60,10 @@
             <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 flex items-start gap-3">
               <span class="text-lg">📧</span>
               <div><p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Gmail</p><p class="text-xs text-gray-500 dark:text-gray-400">Receives inbound emails and sends confirmations</p></div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-3 flex items-start gap-3">
+              <span class="text-lg">✈️</span>
+              <div><p class="text-sm font-semibold text-gray-800 dark:text-gray-200">Telegram</p><p class="text-xs text-gray-500 dark:text-gray-400">Receives messages via Telegram Bot for logging baby data (free, opt-in)</p></div>
             </div>
           </div>
         </section>
