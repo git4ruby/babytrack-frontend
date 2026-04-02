@@ -29,6 +29,7 @@ const phoneLoading = ref(false)
 const showAddPhone = ref(false)
 const smsEnabled = ref(false)
 const telegramLinked = ref(false)
+const telegramAccounts = ref([])
 const telegramLinking = ref(false)
 
 // Password change
@@ -99,6 +100,7 @@ onMounted(async () => {
     phoneNumbers.value = parsePhoneNumbers(data.data?.phone_number)
     smsEnabled.value = data.data?.sms_enabled || false
     telegramLinked.value = data.data?.telegram_linked || false
+    telegramAccounts.value = data.data?.telegram_accounts || []
   } catch {}
   await babyStore.fetchBabies()
 })
@@ -142,12 +144,15 @@ async function linkTelegram() {
   }
 }
 
-async function unlinkTelegram() {
-  const ok = await confirmDialog({ title: 'Unlink Telegram', message: 'You will no longer be able to log via Telegram.', confirmLabel: 'Unlink' })
+async function unlinkTelegram(chatId) {
+  const ok = await confirmDialog({ title: 'Unlink Telegram', message: chatId ? 'Remove this Telegram account?' : 'Remove all linked Telegram accounts?', confirmLabel: 'Unlink' })
   if (!ok) return
   try {
-    await client.delete('/profile/telegram_unlink')
-    telegramLinked.value = false
+    await client.delete('/profile/telegram_unlink', { params: chatId ? { chat_id: chatId } : {} })
+    // Refresh
+    const { data } = await client.get('/profile')
+    telegramLinked.value = data.data?.telegram_linked || false
+    telegramAccounts.value = data.data?.telegram_accounts || []
     ui.showToast('Telegram unlinked')
   } catch (e) {
     ui.showToast('Failed to unlink', 'error')
@@ -385,12 +390,17 @@ async function handleDeleteBaby(baby) {
         </div>
 
         <div v-if="telegramLinked" class="space-y-3">
-          <div class="bg-green-50 rounded-xl p-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-green-500"></span>
-              <span class="text-sm font-medium text-green-800">Telegram linked</span>
+          <div v-for="acct in telegramAccounts" :key="acct.chat_id" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 group">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
+              {{ acct.label ? acct.label[1]?.toUpperCase() : 'T' }}
             </div>
-            <button @click="unlinkTelegram" class="text-xs text-red-500 hover:text-red-700 font-medium">Unlink all</button>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900">{{ acct.label || 'Telegram User' }}</p>
+            </div>
+            <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
+            <button @click="unlinkTelegram(acct.chat_id)" class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition">
+              <XMarkIcon class="w-4 h-4" />
+            </button>
           </div>
           <p class="text-xs text-gray-400">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
           <BaseButton variant="secondary" size="sm" :loading="telegramLinking" @click="linkTelegram">+ Link another family member</BaseButton>
