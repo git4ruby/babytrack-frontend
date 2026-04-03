@@ -58,52 +58,52 @@ onMounted(fetchData)
 
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900">Admin</h1>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Admin</h1>
 
     <!-- Stats -->
     <div v-if="stats" class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
-        <p class="text-3xl font-black text-slate-800">{{ stats.total_users }}</p>
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+        <p class="text-3xl font-black text-slate-800 dark:text-white">{{ stats.total_users }}</p>
         <p class="text-xs font-medium text-slate-400 uppercase">Users</p>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-3xl font-black text-blue-600">{{ stats.total_babies }}</p>
         <p class="text-xs font-medium text-slate-400 uppercase">Babies</p>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-3xl font-black text-green-600">{{ stats.total_feedings }}</p>
         <p class="text-xs font-medium text-slate-400 uppercase">Feedings</p>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-3xl font-black text-purple-600">{{ stats.telegram_users }}</p>
         <p class="text-xs font-medium text-slate-400 uppercase">Telegram Users</p>
       </div>
     </div>
 
     <!-- Users Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="px-5 py-4 border-b border-gray-100">
-        <h2 class="text-sm font-bold text-gray-700">All Users</h2>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+      <div class="px-5 py-4 border-b border-gray-100 dark:border-slate-700">
+        <h2 class="text-sm font-bold text-gray-700 dark:text-slate-200">All Users</h2>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-gray-50 border-b">
+          <thead class="bg-gray-50 dark:bg-slate-900 border-b dark:border-slate-700">
             <tr>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">User</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">Babies</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">SMS</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">Telegram</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">Joined</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">User</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Babies</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">SMS</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Telegram</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Joined</th>
               <th class="px-4 py-3"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50">
-            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+          <tbody class="divide-y divide-gray-50 dark:divide-slate-700">
+            <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-slate-700">
               <td class="px-4 py-3">
-                <p class="font-medium text-gray-900">{{ user.name }}</p>
-                <p class="text-xs text-gray-400">{{ user.email }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ user.name }}</p>
+                <p class="text-xs text-gray-400 dark:text-slate-500">{{ user.email }}</p>
               </td>
-              <td class="px-4 py-3 text-gray-600">{{ user.babies_count }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-slate-300">{{ user.babies_count }}</td>
               <td class="px-4 py-3">
                 <button @click="toggleSms(user)"
                   :class="['text-xs font-bold px-2 py-1 rounded-full', user.sms_enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400']">
@@ -115,7 +115,7 @@ onMounted(fetchData)
                   {{ user.telegram_linked ? 'Linked' : 'No' }}
                 </span>
               </td>
-              <td class="px-4 py-3 text-xs text-gray-400">{{ new Date(user.created_at).toLocaleDateString() }}</td>
+              <td class="px-4 py-3 text-xs text-gray-400 dark:text-slate-500">{{ new Date(user.created_at).toLocaleDateString() }}</td>
               <td class="px-4 py-3 text-right">
                 <button v-if="user.id !== 1" @click="deleteUser(user)" class="p-1 text-gray-300 hover:text-red-500"><TrashIcon class="w-4 h-4" /></button>
               </td>

@@ -15,3 +15,11 @@ export function updateMilestone(id, data) {
 export function deleteMilestone(id) {
   return client.delete(`/milestones/${id}`)
 }
+
+export function uploadPhoto(file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return client.post('/uploads', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+}

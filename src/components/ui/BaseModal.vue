@@ -34,15 +34,15 @@ const emit = defineEmits(['close'])
         >
           <DialogPanel
             :class="[
-              'relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full overflow-hidden',
+              'relative bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl shadow-xl w-full overflow-hidden',
               'max-h-[90vh] flex flex-col',
               size === 'sm' ? 'sm:max-w-sm' : size === 'lg' ? 'sm:max-w-xl' : 'sm:max-w-md',
             ]"
           >
             <!-- Header -->
             <div v-if="title" class="flex items-center justify-between px-5 pt-5 pb-2">
-              <DialogTitle class="text-lg font-semibold text-gray-900">{{ title }}</DialogTitle>
-              <button @click="emit('close')" class="p-1 text-gray-400 hover:text-gray-600 transition">
+              <DialogTitle class="text-lg font-semibold text-gray-900 dark:text-white">{{ title }}</DialogTitle>
+              <button @click="emit('close')" class="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
                 <XMarkIcon class="w-5 h-5" />
               </button>
             </div>

@@ -138,15 +138,15 @@ onMounted(fetchAnalytics)
 <template>
   <div class="space-y-5">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Analytics</h1>
-      <div class="flex gap-1 bg-gray-100 p-1 rounded-lg">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+      <div class="flex gap-1 bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
         <button
           v-for="r in ranges"
           :key="r.value"
           @click="range = r.value"
           :class="[
             'px-3 py-1.5 text-sm font-medium rounded-md transition',
-            range === r.value ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            range === r.value ? 'bg-white dark:bg-slate-600 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200'
           ]"
         >
           {{ r.label }}
@@ -160,29 +160,29 @@ onMounted(fetchAnalytics)
 
     <template v-else-if="analytics">
       <!-- Daily Volume -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 class="text-sm font-medium text-gray-500 mb-4">Daily Volume (ml)</h3>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Daily Volume (ml)</h3>
         <Bar v-if="volumeChart" :data="volumeChart.data" :options="volumeChart.options" />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <!-- Feed Type Breakdown -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-          <h3 class="text-sm font-medium text-gray-500 mb-4">Feed Type Breakdown</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Feed Type Breakdown</h3>
           <div class="max-w-[250px] mx-auto">
             <Doughnut v-if="typeChart" :data="typeChart.data" :options="typeChart.options" />
           </div>
         </div>
 
         <!-- Breast Balance -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-          <h3 class="text-sm font-medium text-gray-500 mb-4">Breast Balance</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Breast Balance</h3>
           <div v-if="breastBalance" class="space-y-4">
             <div class="flex justify-between text-sm">
               <span class="text-pink-600 font-medium">Left: {{ breastBalance.left }} min ({{ breastBalance.left_percent }}%)</span>
               <span class="text-purple-600 font-medium">Right: {{ breastBalance.right }} min ({{ breastBalance.right_percent }}%)</span>
             </div>
-            <div class="flex h-6 rounded-full overflow-hidden bg-gray-100">
+            <div class="flex h-6 rounded-full overflow-hidden bg-gray-100 dark:bg-slate-700">
               <div class="bg-pink-400 transition-all flex items-center justify-center text-xs text-white font-medium" :style="{ width: breastBalance.left_percent + '%' }">
                 <span v-if="breastBalance.left_percent > 15">L</span>
               </div>
@@ -190,20 +190,20 @@ onMounted(fetchAnalytics)
                 <span v-if="breastBalance.right_percent > 15">R</span>
               </div>
             </div>
-            <p v-if="breastBalance.left === 0 && breastBalance.right === 0" class="text-center text-sm text-gray-400">No breastfeeding data in this range</p>
+            <p v-if="breastBalance.left === 0 && breastBalance.right === 0" class="text-center text-sm text-gray-400 dark:text-slate-500">No breastfeeding data in this range</p>
           </div>
         </div>
       </div>
 
       <!-- Feeds Per Day -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 class="text-sm font-medium text-gray-500 mb-4">Feeds Per Day</h3>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Feeds Per Day</h3>
         <Line v-if="feedCountChart" :data="feedCountChart.data" :options="feedCountChart.options" />
       </div>
 
       <!-- Average Gap -->
-      <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 class="text-sm font-medium text-gray-500 mb-4">Average Gap Between Feeds (hours)</h3>
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Average Gap Between Feeds (hours)</h3>
         <Line v-if="gapChart" :data="gapChart.data" :options="gapChart.options" />
       </div>
     </template>

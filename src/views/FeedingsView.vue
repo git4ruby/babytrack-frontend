@@ -115,7 +115,7 @@ onMounted(loadFeedings)
   <div class="space-y-4">
     <!-- Header -->
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Feed Log</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Feed Log</h1>
       <div class="flex items-center gap-2">
         <ExportButton type="feedings" :from="dateRange.from" :to="dateRange.to" />
         <BaseButton @click="ui.feedModalOpen = true">
@@ -126,7 +126,7 @@ onMounted(loadFeedings)
     </div>
 
     <!-- Date Range Selector -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
       <div class="flex flex-wrap gap-2">
         <button
           v-for="preset in rangePresets"
@@ -135,8 +135,8 @@ onMounted(loadFeedings)
           :class="[
             'px-3 py-1.5 text-sm font-medium rounded-lg transition-all',
             rangePreset === preset.value
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              ? 'bg-slate-900 dark:bg-slate-600 text-white shadow-md'
+              : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
           ]"
         >
           {{ preset.label }}
@@ -144,9 +144,9 @@ onMounted(loadFeedings)
       </div>
       <!-- Custom date inputs -->
       <div v-if="rangePreset === 'custom'" class="flex items-center gap-3 mt-3">
-        <input v-model="customFrom" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
-        <span class="text-gray-400 text-sm">to</span>
-        <input v-model="customTo" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+        <input v-model="customFrom" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white dark:bg-slate-700 dark:text-white" />
+        <span class="text-gray-400 dark:text-slate-500 text-sm">to</span>
+        <input v-model="customTo" type="date" class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-slate-600 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white dark:bg-slate-700 dark:text-white" />
       </div>
     </div>
 
@@ -162,7 +162,7 @@ onMounted(loadFeedings)
             'px-3 py-1.5 text-xs font-semibold rounded-full transition-all',
             selectedType === filter.value
               ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
-              : 'bg-white text-gray-500 border border-gray-200 hover:border-blue-300 hover:text-blue-600'
+              : 'bg-white dark:bg-slate-800 text-gray-500 dark:text-slate-400 border border-gray-200 dark:border-slate-700 hover:border-blue-300 hover:text-blue-600'
           ]"
         >
           <span v-if="filter.icon">{{ filter.icon }} </span>{{ filter.label }}
@@ -170,8 +170,8 @@ onMounted(loadFeedings)
       </div>
 
       <!-- Range summary -->
-      <div v-if="!feedingsStore.loading && feedingsStore.feedings.length" class="flex items-center gap-3 text-xs text-gray-500">
-        <span class="font-semibold text-gray-700">{{ totalStats.count }} feeds</span>
+      <div v-if="!feedingsStore.loading && feedingsStore.feedings.length" class="flex items-center gap-3 text-xs text-gray-500 dark:text-slate-400">
+        <span class="font-semibold text-gray-700 dark:text-slate-200">{{ totalStats.count }} feeds</span>
         <span>{{ totalStats.ml }}ml total</span>
         <span class="hidden sm:inline">🍼{{ totalStats.bottles }} 🤱{{ totalStats.breastfeeds }} ⚙️{{ totalStats.pumps }}</span>
       </div>
@@ -185,19 +185,19 @@ onMounted(loadFeedings)
 
     <!-- Feed list grouped by date -->
     <template v-else-if="sortedDates.length > 0">
-      <div v-for="[date, feeds] in sortedDates" :key="date" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div v-for="[date, feeds] in sortedDates" :key="date" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
         <!-- Day header -->
-        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
-          <span class="text-sm font-bold text-gray-800">{{ dateLabel(date) }}</span>
+        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800 dark:to-slate-800 border-b border-gray-100 dark:border-slate-700">
+          <span class="text-sm font-bold text-gray-800 dark:text-white">{{ dateLabel(date) }}</span>
           <div class="flex items-center gap-3 text-xs">
-            <span class="text-gray-500">{{ feeds.length }} feeds</span>
+            <span class="text-gray-500 dark:text-slate-400">{{ feeds.length }} feeds</span>
             <span v-if="dayTotal(feeds)" class="font-bold text-blue-600">{{ dayTotal(feeds) }}ml</span>
             <span v-if="dayBreastMin(feeds)" class="font-medium text-pink-600">{{ dayBreastMin(feeds) }}min 🤱</span>
           </div>
         </div>
 
         <!-- Feed cards -->
-        <div class="divide-y divide-gray-50 px-4">
+        <div class="divide-y divide-gray-50 dark:divide-slate-700 px-4">
           <FeedCard
             v-for="feed in feeds"
             :key="feed.id"
@@ -211,7 +211,7 @@ onMounted(loadFeedings)
       <!-- Pagination -->
       <div v-if="feedingsStore.meta.total_pages > 1" class="flex justify-center items-center gap-3 py-4">
         <BaseButton variant="secondary" size="sm" :disabled="page <= 1" @click="page--; loadFeedings()">Previous</BaseButton>
-        <span class="text-sm text-gray-400">{{ feedingsStore.meta.current_page }} / {{ feedingsStore.meta.total_pages }}</span>
+        <span class="text-sm text-gray-400 dark:text-slate-500">{{ feedingsStore.meta.current_page }} / {{ feedingsStore.meta.total_pages }}</span>
         <BaseButton variant="secondary" size="sm" :disabled="page >= feedingsStore.meta.total_pages" @click="page++; loadFeedings()">Next</BaseButton>
       </div>
     </template>

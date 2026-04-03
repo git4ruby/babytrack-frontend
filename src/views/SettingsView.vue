@@ -212,7 +212,8 @@ async function sendVerification() {
 function exportUrl(type) {
   const token = localStorage.getItem('bt_token')
   const babyId = babyStore.baby?.id
-  return `/api/v1/exports/${type}?baby_id=${babyId}&token=${token}`
+  const path = type.startsWith('reports/') ? type : `exports/${type}`
+  return `/api/v1/${path}?baby_id=${babyId}&token=${token}`
 }
 
 function openEditBaby(baby) {
@@ -259,21 +260,21 @@ async function handleDeleteBaby(baby) {
 
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
+    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
 
     <!-- Baby Profiles -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-bold text-gray-900">Baby Profiles</h2>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Baby Profiles</h2>
         <router-link to="/setup" class="text-sm text-blue-600 font-semibold hover:text-blue-700">+ Add Baby</router-link>
       </div>
       <div class="space-y-3">
-        <div v-for="baby in babyStore.babies" :key="baby.id" class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 group hover:border-blue-200 transition">
+        <div v-for="baby in babyStore.babies" :key="baby.id" class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-slate-700 group hover:border-blue-200 dark:hover:border-blue-700 transition">
           <span class="text-3xl">{{ baby.gender === 'female' ? '👧' : '👶' }}</span>
           <div class="flex-1 min-w-0">
-            <p class="font-bold text-gray-900">{{ baby.name }}</p>
-            <p class="text-sm text-gray-500">Born {{ dayjs(baby.date_of_birth).format('MMMM D, YYYY') }} · {{ baby.age_in_weeks }}w {{ baby.age_in_days % 7 }}d old</p>
-            <p v-if="baby.birth_weight_grams" class="text-xs text-gray-400">Birth weight: {{ baby.birth_weight_grams }}g</p>
+            <p class="font-bold text-gray-900 dark:text-white">{{ baby.name }}</p>
+            <p class="text-sm text-gray-500 dark:text-slate-400">Born {{ dayjs(baby.date_of_birth).format('MMMM D, YYYY') }} · {{ baby.age_in_weeks }}w {{ baby.age_in_days % 7 }}d old</p>
+            <p v-if="baby.birth_weight_grams" class="text-xs text-gray-400 dark:text-slate-500 dark:text-slate-500">Birth weight: {{ baby.birth_weight_grams }}g</p>
           </div>
           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
             <button @click="openEditBaby(baby)" class="p-2 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition"><PencilIcon class="w-4 h-4" /></button>
@@ -284,25 +285,25 @@ async function handleDeleteBaby(baby) {
     </div>
 
     <!-- Email Verification Banner -->
-    <div v-if="!emailVerified" class="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center justify-between">
+    <div v-if="!emailVerified" class="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-2xl p-5 flex items-center justify-between">
       <div>
-        <p class="text-sm font-bold text-amber-800">Verify your email</p>
-        <p class="text-xs text-amber-600 mt-0.5">Verify {{ auth.user?.email }} to enable all features.</p>
+        <p class="text-sm font-bold text-amber-800 dark:text-amber-300">Verify your email</p>
+        <p class="text-xs text-amber-600 dark:text-amber-400 mt-0.5">Verify {{ auth.user?.email }} to enable all features.</p>
       </div>
       <BaseButton size="sm" :loading="verifyLoading" @click="sendVerification">Send Verification</BaseButton>
     </div>
 
     <!-- Baby Sharing -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-1">Share Baby Access</h2>
-      <p class="text-sm text-gray-500 mb-4">Invite family members to log data for your baby without sharing your login.</p>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Share Baby Access</h2>
+      <p class="text-sm text-gray-500 dark:text-slate-400 mb-4">Invite family members to log data for your baby without sharing your login.</p>
 
       <!-- Existing shares -->
       <div v-if="shares.length" class="space-y-2 mb-4">
-        <div v-for="share in shares" :key="share.id" class="flex items-center justify-between p-3 rounded-xl bg-gray-50">
+        <div v-for="share in shares" :key="share.id" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-slate-900">
           <div>
-            <p class="text-sm font-medium text-gray-900">{{ share.user_name || share.invite_email }}</p>
-            <p class="text-xs text-gray-400">{{ share.status === 'accepted' ? 'Active' : 'Invite pending' }}</p>
+            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ share.user_name || share.invite_email }}</p>
+            <p class="text-xs text-gray-400 dark:text-slate-500">{{ share.status === 'accepted' ? 'Active' : 'Invite pending' }}</p>
           </div>
           <div class="flex items-center gap-2">
             <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', share.status === 'accepted' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700']">
@@ -316,20 +317,20 @@ async function handleDeleteBaby(baby) {
       <!-- Invite form -->
       <div class="flex gap-2">
         <input v-model="shareEmail" type="email" placeholder="Email address to invite"
-          class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          class="flex-1 px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         <BaseButton :loading="shareLoading" :disabled="!shareEmail" @click="inviteToShare">Invite</BaseButton>
       </div>
     </div>
 
     <!-- SMS / Email Logging -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-1">Log via {{ smsEnabled ? 'SMS, ' : '' }}Email or Telegram</h2>
-      <p class="text-sm text-gray-500 mb-6">Skip the app — just send {{ smsEnabled ? 'a text, ' : '' }}an email, or a Telegram message to log feeds, diapers, milestones and more.</p>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Log via {{ smsEnabled ? 'SMS, ' : '' }}Email or Telegram</h2>
+      <p class="text-sm text-gray-500 dark:text-slate-400 mb-6">Skip the app — just send {{ smsEnabled ? 'a text, ' : '' }}an email, or a Telegram message to log feeds, diapers, milestones and more.</p>
 
       <!-- How it works -->
-      <div class="bg-slate-50 rounded-xl p-5 mb-6">
-        <h3 class="text-sm font-bold text-gray-700 mb-3">How it works</h3>
-        <div class="space-y-3 text-sm text-gray-600">
+      <div class="bg-slate-50 dark:bg-slate-900 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-slate-200 mb-3">How it works</h3>
+        <div class="space-y-3 text-sm text-gray-600 dark:text-slate-300">
           <div class="flex items-start gap-3">
             <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold">1</span>
             <p>Send {{ smsEnabled ? 'a text, ' : '' }}an email, or a Telegram message with what you want to log</p>
@@ -346,32 +347,32 @@ async function handleDeleteBaby(baby) {
       </div>
 
       <!-- Examples -->
-      <div class="bg-blue-50 rounded-xl p-5 mb-6">
-        <h3 class="text-sm font-bold text-blue-900 mb-3">Example messages</h3>
+      <div class="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-5 mb-6">
+        <h3 class="text-sm font-bold text-blue-900 dark:text-blue-300 mb-3">Example messages</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">bottle 90ml 2:30pm</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">breastfeed left 20min</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">diaper wet</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">diaper poop yellow seedy</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">pump 120ml stored in fridge</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">weight 3.8kg</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">milestone: first smile today</div>
-          <div class="bg-white rounded-lg px-3 py-2 text-gray-700 font-mono text-xs">bottle 60ml formula + diaper wet</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">bottle 90ml 2:30pm</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">breastfeed left 20min</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">diaper wet</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">diaper poop yellow seedy</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">pump 120ml stored in fridge</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">weight 3.8kg</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">milestone: first smile today</div>
+          <div class="bg-white dark:bg-slate-800 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-200 font-mono text-xs">bottle 60ml formula + diaper wet</div>
         </div>
       </div>
 
       <!-- SMS Section (premium only) -->
-      <div v-if="smsEnabled" class="border-t border-gray-100 pt-6">
+      <div v-if="smsEnabled" class="border-t border-gray-100 dark:border-slate-700 pt-6">
         <div class="flex items-center gap-3 mb-4">
           <span class="text-2xl">📱</span>
           <div>
-            <h3 class="text-sm font-bold text-gray-900">SMS</h3>
-            <p class="text-xs text-gray-500">Text this number to log</p>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">SMS</h3>
+            <p class="text-xs text-gray-500 dark:text-slate-400">Text this number to log</p>
           </div>
         </div>
         <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between mb-5">
-          <span class="font-mono text-lg font-bold text-gray-900">{{ smsNumber }}</span>
-          <span class="text-xs text-gray-400">Save as "BabyTrack"</span>
+          <span class="font-mono text-lg font-bold text-gray-900 dark:text-white">{{ smsNumber }}</span>
+          <span class="text-xs text-gray-400 dark:text-slate-500">Save as "BabyTrack"</span>
         </div>
 
         <!-- Linked phone numbers -->
@@ -379,7 +380,7 @@ async function handleDeleteBaby(baby) {
           <div class="flex items-center justify-between mb-3">
             <div>
               <label class="block text-sm font-semibold text-gray-700">Family Phone Numbers</label>
-              <p class="text-xs text-gray-400 mt-0.5">Add phone numbers for anyone who can log via SMS</p>
+              <p class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">Add phone numbers for anyone who can log via SMS</p>
             </div>
             <button
               v-if="!showAddPhone"
@@ -395,14 +396,14 @@ async function handleDeleteBaby(baby) {
             <div
               v-for="(phone, i) in phoneNumbers"
               :key="i"
-              class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 group"
+              class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-slate-900 group"
             >
               <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold flex-shrink-0">
                 {{ phone.label ? phone.label[0].toUpperCase() : (i + 1) }}
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-mono font-medium text-gray-900">{{ phone.number }}</p>
-                <p v-if="phone.label" class="text-xs text-gray-500">{{ phone.label }}</p>
+                <p class="text-sm font-mono font-medium text-gray-900 dark:text-white">{{ phone.number }}</p>
+                <p v-if="phone.label" class="text-xs text-gray-500 dark:text-slate-400">{{ phone.label }}</p>
               </div>
               <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
               <button
@@ -420,25 +421,25 @@ async function handleDeleteBaby(baby) {
           </div>
 
           <!-- Add number form -->
-          <div v-if="showAddPhone" class="border border-blue-200 bg-blue-50/50 rounded-xl p-4 space-y-3">
-            <h4 class="text-sm font-semibold text-gray-800">Add Phone Number</h4>
+          <div v-if="showAddPhone" class="border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl p-4 space-y-3">
+            <h4 class="text-sm font-semibold text-gray-800 dark:text-white">Add Phone Number</h4>
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Phone Number</label>
+              <label class="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">Phone Number</label>
               <input
                 v-model="newNumber"
                 type="tel"
                 placeholder="+12345678900"
-                class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
                 @keyup.enter="addNumber"
               />
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-600 mb-1">Label (optional)</label>
+              <label class="block text-xs font-medium text-gray-600 dark:text-slate-300 mb-1">Label (optional)</label>
               <input
                 v-model="newLabel"
                 type="text"
                 placeholder="e.g. Mom, Dad, Grandma"
-                class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
                 @keyup.enter="addNumber"
               />
             </div>
@@ -452,94 +453,109 @@ async function handleDeleteBaby(baby) {
       </div>
 
       <!-- Email Section -->
-      <div class="border-t border-gray-100 pt-6 mt-6">
+      <div class="border-t border-gray-100 dark:border-slate-700 pt-6 mt-6">
         <div class="flex items-center gap-3 mb-4">
           <span class="text-2xl">📧</span>
           <div>
-            <h3 class="text-sm font-bold text-gray-900">Email</h3>
-            <p class="text-xs text-gray-500">Email this address to log (matched by your account email)</p>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Email</h3>
+            <p class="text-xs text-gray-500 dark:text-slate-400">Email this address to log (matched by your account email)</p>
           </div>
         </div>
         <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
-          <span class="font-mono text-sm font-bold text-gray-900">{{ emailAddress }}</span>
-          <span class="text-xs text-gray-400">No setup needed</span>
+          <span class="font-mono text-sm font-bold text-gray-900 dark:text-white dark:text-white">{{ emailAddress }}</span>
+          <span class="text-xs text-gray-400 dark:text-slate-500">No setup needed</span>
         </div>
-        <p class="text-xs text-gray-400 mt-2">Just send from the same email you signed up with: <strong>{{ auth.user?.email }}</strong></p>
+        <p class="text-xs text-gray-400 dark:text-slate-500 mt-2">Just send from the same email you signed up with: <strong>{{ auth.user?.email }}</strong></p>
       </div>
 
       <!-- Telegram Section -->
-      <div class="border-t border-gray-100 pt-6 mt-6">
+      <div class="border-t border-gray-100 dark:border-slate-700 pt-6 mt-6">
         <div class="flex items-center gap-3 mb-4">
           <span class="text-2xl">✈️</span>
           <div>
-            <h3 class="text-sm font-bold text-gray-900">Telegram</h3>
-            <p class="text-xs text-gray-500">Free, instant, unlimited — message @LullaTrackBot to log</p>
+            <h3 class="text-sm font-bold text-gray-900 dark:text-white">Telegram</h3>
+            <p class="text-xs text-gray-500 dark:text-slate-400">Free, instant, unlimited — message @LullaTrackBot to log</p>
           </div>
         </div>
 
         <div v-if="telegramLinked" class="space-y-3">
-          <div v-for="acct in telegramAccounts" :key="acct.chat_id" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 group">
+          <div v-for="acct in telegramAccounts" :key="acct.chat_id" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-slate-900 group">
             <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
               {{ acct.label ? acct.label[1]?.toUpperCase() : 'T' }}
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-gray-900">{{ acct.label || 'Telegram User' }}</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">{{ acct.label || 'Telegram User' }}</p>
+
             </div>
             <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
             <button @click="unlinkTelegram(acct.chat_id)" class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition">
               <XMarkIcon class="w-4 h-4" />
             </button>
           </div>
-          <p class="text-xs text-gray-400">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
+          <p class="text-xs text-gray-400 dark:text-slate-500">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
           <BaseButton variant="secondary" size="sm" :loading="telegramLinking" @click="linkTelegram">+ Link another family member</BaseButton>
         </div>
 
         <div v-else class="space-y-3">
-          <p class="text-sm text-gray-600">Link your Telegram account to log baby data via the LullaTrack bot — free and instant.</p>
+          <p class="text-sm text-gray-600 dark:text-slate-300">Link your Telegram account to log baby data via the LullaTrack bot — free and instant.</p>
           <BaseButton :loading="telegramLinking" @click="linkTelegram">Link Telegram</BaseButton>
         </div>
       </div>
     </div>
 
     <!-- Export Data -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-1">Export Data</h2>
-      <p class="text-sm text-gray-500 mb-5">Download your data as CSV files for pediatrician visits or personal records.</p>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Export Data</h2>
+      <p class="text-sm text-gray-500 dark:text-slate-400 mb-5">Download your data as CSV files for pediatrician visits or personal records.</p>
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <a :href="exportUrl('feedings')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-center">
+        <a :href="exportUrl('feedings')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition text-center">
           <span class="text-2xl">🍼</span>
           <span class="text-xs font-bold text-blue-700">Feedings</span>
         </a>
-        <a :href="exportUrl('diapers')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-cyan-50 hover:bg-cyan-100 transition text-center">
+        <a :href="exportUrl('diapers')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-cyan-50 dark:bg-cyan-900/30 hover:bg-cyan-100 dark:hover:bg-cyan-900/50 transition text-center">
           <span class="text-2xl">🧷</span>
           <span class="text-xs font-bold text-cyan-700">Diapers</span>
         </a>
-        <a :href="exportUrl('weight')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition text-center">
+        <a :href="exportUrl('weight')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition text-center">
           <span class="text-2xl">⚖️</span>
           <span class="text-xs font-bold text-emerald-700">Weight</span>
         </a>
-        <a :href="exportUrl('all')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-purple-50 hover:bg-purple-100 transition text-center">
+        <a :href="exportUrl('all')" class="flex flex-col items-center gap-2 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition text-center">
           <span class="text-2xl">📦</span>
           <span class="text-xs font-bold text-purple-700">All Data</span>
         </a>
       </div>
+
+      <!-- Doctor Report PDF -->
+      <div class="mt-5 pt-5 border-t border-gray-100 dark:border-slate-700">
+        <h3 class="text-sm font-bold text-gray-700 dark:text-slate-200 mb-2">Doctor Visit Report</h3>
+        <p class="text-xs text-gray-500 dark:text-slate-400 mb-3">Generate a PDF summary for your pediatrician with growth, feedings, sleep, diapers, milestones, and vaccinations.</p>
+        <div class="flex gap-2">
+          <a :href="exportUrl('reports/doctor_visit') + '&days=30'" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-400 text-xs font-bold transition">
+            <span>📋</span> Last 30 Days
+          </a>
+          <a :href="exportUrl('reports/doctor_visit') + '&days=90'" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-900/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-400 text-xs font-bold transition">
+            <span>📋</span> Last 90 Days
+          </a>
+        </div>
+      </div>
     </div>
 
     <!-- Change Password -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-4">Change Password</h2>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Change Password</h2>
       <div class="space-y-3 max-w-md">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-          <input v-model="pwForm.current" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Current Password</label>
+          <input v-model="pwForm.current" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-          <input v-model="pwForm.newPw" type="password" placeholder="At least 6 characters" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">New Password</label>
+          <input v-model="pwForm.newPw" type="password" placeholder="At least 6 characters" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-          <input v-model="pwForm.confirm" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Confirm New Password</label>
+          <input v-model="pwForm.confirm" type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <p v-if="pwError" class="text-sm text-red-600 font-medium">{{ pwError }}</p>
         <BaseButton :loading="pwLoading" :disabled="!pwForm.current || !pwForm.newPw || !pwForm.confirm" @click="changePassword">Update Password</BaseButton>
@@ -547,8 +563,8 @@ async function handleDeleteBaby(baby) {
     </div>
 
     <!-- Privacy & Legal -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 class="text-lg font-bold text-gray-900 mb-3">Legal</h2>
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+      <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Legal</h2>
       <router-link to="/privacy" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</router-link>
     </div>
 
@@ -556,30 +572,30 @@ async function handleDeleteBaby(baby) {
     <BaseModal :open="editBabyModal" title="Edit Baby Profile" @close="editBabyModal = false">
       <div class="space-y-4 mt-2">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-          <input v-model="editBabyForm.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Name</label>
+          <input v-model="editBabyForm.name" type="text" required class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-          <input v-model="editBabyForm.date_of_birth" type="date" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Date of Birth</label>
+          <input v-model="editBabyForm.date_of_birth" type="date" required class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Gender</label>
           <div class="flex gap-3">
             <button v-for="g in [{v:'male',l:'Boy',e:'👦'},{v:'female',l:'Girl',e:'👧'}]" :key="g.v"
               @click="editBabyForm.gender = editBabyForm.gender === g.v ? '' : g.v"
-              :class="['flex-1 py-3 text-sm font-medium rounded-xl border-2 transition', editBabyForm.gender === g.v ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600']">
+              :class="['flex-1 py-3 text-sm font-medium rounded-xl border-2 transition', editBabyForm.gender === g.v ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-slate-600 text-gray-600 dark:text-slate-300']">
               {{ g.e }} {{ g.l }}
             </button>
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Birth Weight (grams)</label>
-          <input v-model="editBabyForm.birth_weight_grams" type="number" placeholder="e.g. 3300" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Birth Weight (grams)</label>
+          <input v-model="editBabyForm.birth_weight_grams" type="number" placeholder="e.g. 3300" class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-          <input v-model="editBabyForm.notes" type="text" placeholder="Any notes..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 focus:bg-white" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Notes</label>
+          <input v-model="editBabyForm.notes" type="text" placeholder="Any notes..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
         <BaseButton variant="primary" block :loading="editBabyLoading" :disabled="!editBabyForm.name" @click="saveEditBaby">Save Changes</BaseButton>
       </div>

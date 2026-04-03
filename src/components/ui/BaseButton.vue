@@ -18,9 +18,9 @@ defineProps({
       size === 'sm' ? 'px-3 py-1.5 text-sm gap-1.5' : size === 'lg' ? 'px-5 py-3 text-base gap-2' : 'px-4 py-2.5 text-sm gap-2',
       // Variant
       variant === 'primary' ? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-300' : '',
-      variant === 'secondary' ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-400' : '',
+      variant === 'secondary' ? 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-600 focus:ring-gray-400' : '',
       variant === 'danger' ? 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500' : '',
-      variant === 'ghost' ? 'text-gray-600 hover:bg-gray-100 focus:ring-gray-400' : '',
+      variant === 'ghost' ? 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-700 focus:ring-gray-400' : '',
       (disabled || loading) ? 'opacity-50 cursor-not-allowed' : '',
     ]"
   >

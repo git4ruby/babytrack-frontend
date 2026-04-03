@@ -129,7 +129,7 @@ onMounted(fetchAppointments)
 <template>
   <div class="space-y-5">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Appointments</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Appointments</h1>
       <BaseButton @click="openCreate">
         <PlusIcon class="w-4 h-4" /> New Appointment
       </BaseButton>
@@ -142,37 +142,37 @@ onMounted(fetchAppointments)
     <template v-else>
       <!-- Upcoming -->
       <div v-if="upcomingAppts.length">
-        <h2 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">Upcoming</h2>
+        <h2 class="text-sm font-semibold text-gray-500 dark:text-slate-400 mb-3 uppercase tracking-wide">Upcoming</h2>
         <div class="space-y-3">
-          <div v-for="appt in upcomingAppts" :key="appt.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <div v-for="appt in upcomingAppts" :key="appt.id" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <div class="flex items-center gap-2">
-                  <h3 class="font-medium text-gray-900">{{ appt.title }}</h3>
+                  <h3 class="font-medium text-gray-900 dark:text-white">{{ appt.title }}</h3>
                   <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', statusConfig[appt.status]?.class]">
                     {{ typeConfig[appt.appointment_type]?.label }}
                   </span>
                 </div>
-                <p class="text-sm text-gray-600 mt-1">
+                <p class="text-sm text-gray-600 dark:text-slate-300 mt-1">
                   {{ dayjs(appt.scheduled_at).format('ddd, MMM D YYYY · h:mm A') }}
                 </p>
-                <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                <div class="flex items-center gap-4 mt-2 text-xs text-gray-500 dark:text-slate-400">
                   <span v-if="appt.provider_name">Dr. {{ appt.provider_name }}</span>
                   <span v-if="appt.location" class="flex items-center gap-1">
                     <MapPinIcon class="w-3 h-3" /> {{ appt.location }}
                   </span>
                 </div>
-                <p v-if="appt.notes" class="text-xs text-gray-400 mt-1 italic">{{ appt.notes }}</p>
+                <p v-if="appt.notes" class="text-xs text-gray-400 dark:text-slate-500 mt-1 italic">{{ appt.notes }}</p>
               </div>
             </div>
             <div class="flex gap-2 mt-3">
-              <button @click="markCompleted(appt.id)" class="flex-1 py-2 text-xs font-medium text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition flex items-center justify-center gap-1">
+              <button @click="markCompleted(appt.id)" class="flex-1 py-2 text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-900/50 rounded-lg transition flex items-center justify-center gap-1">
                 <CheckIcon class="w-3.5 h-3.5" /> Complete
               </button>
-              <button @click="openEdit(appt)" class="flex-1 py-2 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition">
+              <button @click="openEdit(appt)" class="flex-1 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition">
                 Edit
               </button>
-              <button @click="cancelAppt(appt.id)" class="flex-1 py-2 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition flex items-center justify-center gap-1">
+              <button @click="cancelAppt(appt.id)" class="flex-1 py-2 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 rounded-lg transition flex items-center justify-center gap-1">
                 <XMarkIcon class="w-3.5 h-3.5" /> Cancel
               </button>
             </div>
@@ -182,16 +182,16 @@ onMounted(fetchAppointments)
 
       <!-- Past -->
       <div v-if="pastAppts.length">
-        <h2 class="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">Past</h2>
+        <h2 class="text-sm font-semibold text-gray-500 dark:text-slate-400 mb-3 uppercase tracking-wide">Past</h2>
         <div class="space-y-2">
-          <div v-for="appt in pastAppts" :key="appt.id" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 opacity-75">
+          <div v-for="appt in pastAppts" :key="appt.id" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-4 opacity-75">
             <div class="flex items-center gap-2">
-              <h3 class="font-medium text-gray-700 text-sm">{{ appt.title }}</h3>
+              <h3 class="font-medium text-gray-700 dark:text-slate-200 text-sm">{{ appt.title }}</h3>
               <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', statusConfig[appt.status]?.class]">
                 {{ statusConfig[appt.status]?.label }}
               </span>
             </div>
-            <p class="text-xs text-gray-500 mt-1">{{ dayjs(appt.scheduled_at).format('MMM D, YYYY · h:mm A') }}</p>
+            <p class="text-xs text-gray-500 dark:text-slate-400 mt-1">{{ dayjs(appt.scheduled_at).format('MMM D, YYYY · h:mm A') }}</p>
           </div>
         </div>
       </div>
@@ -205,37 +205,37 @@ onMounted(fetchAppointments)
     <BaseModal :open="showForm" :title="editingId ? 'Edit Appointment' : 'New Appointment'" @close="showForm = false">
       <div class="space-y-4 mt-2">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <input v-model="form.title" type="text" placeholder="e.g. 2-month well visit" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Title</label>
+          <input v-model="form.title" type="text" placeholder="e.g. 2-month well visit" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Type</label>
           <div class="flex gap-2 flex-wrap">
             <button
               v-for="(cfg, type) in typeConfig"
               :key="type"
               @click="form.appointment_type = type"
-              :class="['px-3 py-1.5 text-sm rounded-lg border-2 transition', form.appointment_type === type ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600']"
+              :class="['px-3 py-1.5 text-sm rounded-lg border-2 transition', form.appointment_type === type ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : 'border-gray-200 dark:border-slate-600 text-gray-600 dark:text-slate-300']"
             >
               {{ cfg.label }}
             </button>
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
-          <input v-model="form.scheduled_at" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Date & Time</label>
+          <input v-model="form.scheduled_at" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Provider</label>
-          <input v-model="form.provider_name" type="text" placeholder="e.g. Dr. Smith" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Provider</label>
+          <input v-model="form.provider_name" type="text" placeholder="e.g. Dr. Smith" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
-          <input v-model="form.location" type="text" placeholder="e.g. Children's Hospital" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Location</label>
+          <input v-model="form.location" type="text" placeholder="e.g. Children's Hospital" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-          <input v-model="form.notes" type="text" placeholder="Any notes..." class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Notes</label>
+          <input v-model="form.notes" type="text" placeholder="Any notes..." class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.title" @click="submitForm">
           {{ editingId ? 'Update' : 'Create' }} Appointment

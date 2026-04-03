@@ -44,7 +44,7 @@ const volumeBadge = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-3 py-3 group cursor-pointer hover:bg-gray-50 -mx-4 px-4 rounded-lg transition" @click="emit('edit', feeding)">
+  <div class="flex items-center gap-3 py-3 group cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 -mx-4 px-4 rounded-lg transition" @click="emit('edit', feeding)">
     <div :class="['flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl border', config.bg, config.border]">
       {{ config.icon }}
     </div>
@@ -55,8 +55,8 @@ const volumeBadge = computed(() => {
         <span v-if="feeding.session_group" class="text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-md font-bold uppercase tracking-wide">combo</span>
         <span v-if="feeding.milk_type === 'formula'" class="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded-md font-bold uppercase tracking-wide">formula</span>
       </div>
-      <p class="text-sm text-gray-500 mt-0.5 capitalize">{{ detail }}</p>
-      <p v-if="feeding.notes" class="text-xs text-gray-400 mt-0.5 italic">{{ feeding.notes }}</p>
+      <p class="text-sm text-gray-500 dark:text-slate-400 mt-0.5 capitalize">{{ detail }}</p>
+      <p v-if="feeding.notes" class="text-xs text-gray-400 dark:text-slate-500 mt-0.5 italic">{{ feeding.notes }}</p>
     </div>
 
     <div class="flex-shrink-0 flex items-center gap-3">
@@ -64,7 +64,7 @@ const volumeBadge = computed(() => {
         {{ volumeBadge }}
       </span>
       <div class="text-right">
-        <p class="text-xs font-medium text-gray-400">{{ time }}</p>
+        <p class="text-xs font-medium text-gray-400 dark:text-slate-500">{{ time }}</p>
         <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
           <button @click.stop="emit('edit', feeding)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
             <PencilIcon class="w-3.5 h-3.5" />

@@ -160,7 +160,7 @@ onMounted(fetchLogs)
 <template>
   <div class="space-y-5">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Weight Log</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white dark:text-white">Weight Log</h1>
       <div class="flex items-center gap-2">
         <ExportButton type="weight" />
         <BaseButton @click="showForm = true">
@@ -171,55 +171,55 @@ onMounted(fetchLogs)
 
     <!-- Stats cards -->
     <div v-if="latestWeight" class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <p class="text-sm text-gray-500">Current Weight</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">{{ toDisplay(latestWeight.weight_grams) }}</p>
-        <p class="text-xs text-gray-400 mt-1">{{ dayjs(latestWeight.recorded_at).format('MMM D, YYYY') }}</p>
+      <div class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700">
+        <p class="text-sm text-gray-500 dark:text-slate-400">Current Weight</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ toDisplay(latestWeight.weight_grams) }}</p>
+        <p class="text-xs text-gray-400 dark:text-slate-500 mt-1">{{ dayjs(latestWeight.recorded_at).format('MMM D, YYYY') }}</p>
       </div>
-      <div v-if="weightChange !== null" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <p class="text-sm text-gray-500">Last Change</p>
+      <div v-if="weightChange !== null" class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700">
+        <p class="text-sm text-gray-500 dark:text-slate-400">Last Change</p>
         <p :class="['text-2xl font-bold mt-1', weightChange >= 0 ? 'text-green-600' : 'text-red-600']">
           {{ weightChange >= 0 ? '+' : '' }}{{ weightChange }}g
         </p>
       </div>
-      <div v-if="currentPercentile" class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <p class="text-sm text-gray-500">WHO Percentile</p>
+      <div v-if="currentPercentile" class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700">
+        <p class="text-sm text-gray-500 dark:text-slate-400">WHO Percentile</p>
         <p class="text-2xl font-bold text-blue-600 mt-1">{{ currentPercentile }}th</p>
-        <p class="text-xs text-gray-400 mt-0.5">weight-for-age</p>
+        <p class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">weight-for-age</p>
       </div>
-      <div v-else class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <p class="text-sm text-gray-500">Measurements</p>
-        <p class="text-2xl font-bold text-gray-900 mt-1">{{ logs.length }}</p>
+      <div v-else class="bg-white dark:bg-slate-800 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-slate-700">
+        <p class="text-sm text-gray-500 dark:text-slate-400">Measurements</p>
+        <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ logs.length }}</p>
       </div>
     </div>
 
     <!-- Growth Chart -->
-    <div v-if="chartData" class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-      <h3 class="text-sm font-medium text-gray-500 mb-4">Growth Chart</h3>
+    <div v-if="chartData" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+      <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-4">Growth Chart</h3>
       <Line :data="chartData.data" :options="chartData.options" />
     </div>
 
     <!-- Table -->
-    <div v-if="logs.length > 0" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div v-if="logs.length > 0" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-gray-50 border-b border-gray-100">
+          <thead class="bg-gray-50 dark:bg-slate-900 border-b border-gray-100 dark:border-slate-700">
             <tr>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">Date</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500">Weight</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Height</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Head</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500 hidden md:table-cell">By</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Date</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Weight</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400 hidden sm:table-cell">Height</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400 hidden sm:table-cell">Head</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400 hidden md:table-cell">By</th>
               <th class="px-4 py-3"></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50">
-            <tr v-for="log in [...logs].sort((a,b) => new Date(b.recorded_at) - new Date(a.recorded_at))" :key="log.id" class="hover:bg-gray-50 group">
-              <td class="px-4 py-3 text-gray-900">{{ dayjs(log.recorded_at).format('MMM D, YYYY') }}</td>
-              <td class="px-4 py-3 font-medium text-gray-900">{{ toDisplay(log.weight_grams) }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">{{ log.height_cm ? log.height_cm + ' cm' : '—' }}</td>
-              <td class="px-4 py-3 text-gray-600 hidden sm:table-cell">{{ log.head_circumference_cm ? log.head_circumference_cm + ' cm' : '—' }}</td>
-              <td class="px-4 py-3 text-gray-500 hidden md:table-cell">{{ log.measured_by || '—' }}</td>
+          <tbody class="divide-y divide-gray-50 dark:divide-slate-700">
+            <tr v-for="log in [...logs].sort((a,b) => new Date(b.recorded_at) - new Date(a.recorded_at))" :key="log.id" class="hover:bg-gray-50 dark:hover:bg-slate-700 group">
+              <td class="px-4 py-3 text-gray-900 dark:text-white">{{ dayjs(log.recorded_at).format('MMM D, YYYY') }}</td>
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ toDisplay(log.weight_grams) }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-slate-300 hidden sm:table-cell">{{ log.height_cm ? log.height_cm + ' cm' : '—' }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-slate-300 hidden sm:table-cell">{{ log.head_circumference_cm ? log.head_circumference_cm + ' cm' : '—' }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-slate-400 hidden md:table-cell">{{ log.measured_by || '—' }}</td>
               <td class="px-4 py-3 text-right">
                 <button @click="handleDelete(log.id)" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
                   <TrashIcon class="w-4 h-4" />
@@ -239,26 +239,26 @@ onMounted(fetchLogs)
     <BaseModal :open="showForm" title="Add Weight Measurement" @close="showForm = false">
       <div class="space-y-4 mt-2">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-          <input v-model="form.recorded_at" type="date" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Date</label>
+          <input v-model="form.recorded_at" type="date" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Weight (grams)</label>
-          <input v-model="form.weight_grams" type="number" min="1" placeholder="e.g. 3500" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Weight (grams)</label>
+          <input v-model="form.weight_grams" type="number" min="1" placeholder="e.g. 3500" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
-            <input v-model="form.height_cm" type="number" step="0.1" placeholder="Optional" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+            <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Height (cm)</label>
+            <input v-model="form.height_cm" type="number" step="0.1" placeholder="Optional" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Head (cm)</label>
-            <input v-model="form.head_circumference_cm" type="number" step="0.1" placeholder="Optional" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+            <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Head (cm)</label>
+            <input v-model="form.head_circumference_cm" type="number" step="0.1" placeholder="Optional" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Measured By</label>
-          <input v-model="form.measured_by" type="text" placeholder="e.g. Pediatrician, Home scale" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Measured By</label>
+          <input v-model="form.measured_by" type="text" placeholder="e.g. Pediatrician, Home scale" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
         <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.weight_grams" @click="submitWeight">Save Measurement</BaseButton>
       </div>

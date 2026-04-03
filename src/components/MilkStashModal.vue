@@ -65,30 +65,30 @@ async function submit() {
     <div class="space-y-4 mt-2">
       <!-- Volume -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Volume (ml)</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Volume (ml)</label>
         <input
           v-model="volumeMl"
           type="number"
           min="1"
           max="500"
           placeholder="e.g. 120"
-          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
         />
       </div>
 
       <!-- Date/Time -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Expressed / Stored At</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Expressed / Stored At</label>
         <input
           v-model="storedAt"
           type="datetime-local"
-          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
         />
       </div>
 
       <!-- Storage Type -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Store In</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Store In</label>
         <div class="grid grid-cols-3 gap-2">
           <button
             v-for="opt in storageOptions"
@@ -97,36 +97,36 @@ async function submit() {
             :class="[
               'flex flex-col items-center gap-1 py-3 rounded-lg border-2 transition text-center',
               storageType === opt.value
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30'
+                : 'border-gray-200 dark:border-slate-600 hover:border-gray-300'
             ]"
           >
             <span class="text-xl">{{ opt.icon }}</span>
-            <span class="text-xs font-medium text-gray-700">{{ opt.label }}</span>
-            <span class="text-[10px] text-gray-400">{{ opt.expiry }}</span>
+            <span class="text-xs font-medium text-gray-700 dark:text-slate-200">{{ opt.label }}</span>
+            <span class="text-[10px] text-gray-400 dark:text-slate-500">{{ opt.expiry }}</span>
           </button>
         </div>
       </div>
 
       <!-- Label -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Label (optional)</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Label (optional)</label>
         <input
           v-model="label"
           type="text"
           :placeholder="`e.g. ${dayjs().format('MMM D')} morning pump`"
-          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
         />
       </div>
 
       <!-- Notes -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Notes (optional)</label>
         <input
           v-model="notes"
           type="text"
           placeholder="Any notes..."
-          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+          class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white"
         />
       </div>
 

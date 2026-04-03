@@ -123,7 +123,7 @@ onMounted(loadData)
 <template>
   <div class="space-y-5">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">Diapers</h1>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Diapers</h1>
       <div class="flex items-center gap-2">
         <ExportButton type="diapers" :from="dateRange.from" :to="dateRange.to" />
         <BaseButton @click="ui.diaperModalOpen = true">
@@ -140,7 +140,7 @@ onMounted(loadData)
         @click="rangePreset = preset.value"
         :class="[
           'px-3 py-1.5 text-sm font-medium rounded-lg transition-all',
-          rangePreset === preset.value ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
+          rangePreset === preset.value ? 'bg-slate-900 dark:bg-slate-600 text-white shadow-md' : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
         ]"
       >
         {{ preset.label }}
@@ -149,53 +149,53 @@ onMounted(loadData)
 
     <!-- Stats cards -->
     <div v-if="diapersStore.stats" class="grid grid-cols-2 lg:grid-cols-5 gap-3">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
-        <p class="text-3xl font-black text-slate-800">{{ diapersStore.stats.total_changes }}</p>
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+        <p class="text-3xl font-black text-slate-800 dark:text-white">{{ diapersStore.stats.total_changes }}</p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase">Total</p>
       </div>
-      <div class="bg-sky-50 rounded-2xl p-4 border border-sky-100 text-center">
+      <div class="bg-sky-50 dark:bg-sky-900/30 rounded-2xl p-4 border border-sky-100 dark:border-sky-800 text-center">
         <p class="text-3xl font-black text-sky-600">{{ diapersStore.stats.total_wet }}</p>
         <p class="text-xs font-medium text-sky-400 mt-1 uppercase">💧 Wet</p>
       </div>
-      <div class="bg-amber-50 rounded-2xl p-4 border border-amber-100 text-center">
+      <div class="bg-amber-50 dark:bg-amber-900/30 rounded-2xl p-4 border border-amber-100 dark:border-amber-800 text-center">
         <p class="text-3xl font-black text-amber-600">{{ diapersStore.stats.total_soiled }}</p>
         <p class="text-xs font-medium text-amber-400 mt-1 uppercase">💩 Soiled</p>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-3xl font-black text-indigo-600">{{ diapersStore.stats.avg_per_day }}</p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase">Avg/Day</p>
       </div>
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 text-center">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-3xl font-black" :class="diapersStore.stats.rash_days > 0 ? 'text-red-500' : 'text-green-500'">{{ diapersStore.stats.rash_days }}</p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase">Rash Days</p>
       </div>
     </div>
 
     <!-- Chart -->
-    <div v-if="chartData && rangePreset !== 'today'" class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-      <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Daily Diaper Counts</h3>
+    <div v-if="chartData && rangePreset !== 'today'" class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700">
+      <h3 class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-4">Daily Diaper Counts</h3>
       <Bar :data="chartData.data" :options="chartData.options" />
     </div>
 
     <!-- Timeline -->
     <template v-if="groupedChanges.length > 0">
-      <div v-for="[date, changes] in groupedChanges" :key="date" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-100">
-          <span class="text-sm font-bold text-gray-800">{{ dateLabel(date) }}</span>
+      <div v-for="[date, changes] in groupedChanges" :key="date" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-slate-800 dark:to-slate-800 border-b border-gray-100 dark:border-slate-700">
+          <span class="text-sm font-bold text-gray-800 dark:text-white">{{ dateLabel(date) }}</span>
           <div class="flex items-center gap-2 text-xs">
-            <span class="font-bold text-gray-700">{{ dayStats(changes).total }} changes</span>
+            <span class="font-bold text-gray-700 dark:text-slate-200">{{ dayStats(changes).total }} changes</span>
             <span class="text-sky-600 font-medium">💧{{ dayStats(changes).wet }}</span>
             <span class="text-amber-600 font-medium">💩{{ dayStats(changes).soiled }}</span>
           </div>
         </div>
-        <div class="divide-y divide-gray-50 px-4">
+        <div class="divide-y divide-gray-50 dark:divide-slate-700 px-4">
           <div v-for="c in changes" :key="c.id" class="flex items-center gap-3 py-3 group">
             <div :class="[
               'flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-lg border',
-              c.diaper_type === 'wet' ? 'bg-sky-50 border-sky-100' :
-              c.diaper_type === 'soiled' ? 'bg-amber-50 border-amber-100' :
-              c.diaper_type === 'both' ? 'bg-purple-50 border-purple-100' :
-              'bg-gray-50 border-gray-100'
+              c.diaper_type === 'wet' ? 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800' :
+              c.diaper_type === 'soiled' ? 'bg-amber-50 dark:bg-amber-900/30 border-amber-100 dark:border-amber-800' :
+              c.diaper_type === 'both' ? 'bg-purple-50 dark:bg-purple-900/30 border-purple-100 dark:border-purple-800' :
+              'bg-gray-50 dark:bg-slate-700 border-gray-100 dark:border-slate-600'
             ]">
               {{ typeConfig[c.diaper_type]?.icon }}
             </div>
@@ -209,14 +209,14 @@ onMounted(loadData)
                 ]">
                   {{ typeConfig[c.diaper_type]?.label }}
                 </span>
-                <span v-if="c.stool_color" class="text-[10px] px-1.5 py-0.5 bg-gray-100 rounded-md font-bold uppercase text-gray-600">{{ c.stool_color }}</span>
-                <span v-if="c.consistency" class="text-[10px] px-1.5 py-0.5 bg-gray-100 rounded-md font-bold uppercase text-gray-600">{{ c.consistency }}</span>
+                <span v-if="c.stool_color" class="text-[10px] px-1.5 py-0.5 bg-gray-100 dark:bg-slate-700 rounded-md font-bold uppercase text-gray-600 dark:text-slate-300">{{ c.stool_color }}</span>
+                <span v-if="c.consistency" class="text-[10px] px-1.5 py-0.5 bg-gray-100 dark:bg-slate-700 rounded-md font-bold uppercase text-gray-600 dark:text-slate-300">{{ c.consistency }}</span>
                 <span v-if="c.has_rash" class="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-700 rounded-md font-bold uppercase">rash</span>
               </div>
-              <p v-if="c.notes" class="text-xs text-gray-400 mt-0.5 italic">{{ c.notes }}</p>
+              <p v-if="c.notes" class="text-xs text-gray-400 dark:text-slate-500 mt-0.5 italic">{{ c.notes }}</p>
             </div>
             <div class="flex-shrink-0 text-right">
-              <p class="text-xs font-medium text-gray-400">{{ c.has_time ? dayjs(c.changed_at).format('h:mm A') : '' }}</p>
+              <p class="text-xs font-medium text-gray-400 dark:text-slate-500">{{ c.has_time ? dayjs(c.changed_at).format('h:mm A') : '' }}</p>
               <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
                 <button @click="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
                   <PencilIcon class="w-3.5 h-3.5" />

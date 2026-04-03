@@ -111,19 +111,19 @@ watch(() => ui.diaperModalOpen, (open) => {
     <div class="space-y-4 mt-2">
       <div class="grid grid-cols-2 gap-2">
         <button v-for="opt in typeOptions" :key="opt.value" @click="selectType(opt.value)"
-          :class="['flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 transition text-center', diaperType === opt.value ? `border-${opt.color}-500 bg-${opt.color}-50` : 'border-gray-200 hover:border-gray-300']">
+          :class="['flex flex-col items-center gap-1.5 p-4 rounded-xl border-2 transition text-center', diaperType === opt.value ? `border-${opt.color}-500 bg-${opt.color}-50 dark:bg-${opt.color}-900/30` : 'border-gray-200 dark:border-slate-600 hover:border-gray-300']">
           <span class="text-2xl">{{ opt.icon }}</span>
-          <span class="text-xs font-semibold text-gray-700">{{ opt.label }}</span>
+          <span class="text-xs font-semibold text-gray-700 dark:text-slate-200">{{ opt.label }}</span>
         </button>
       </div>
 
       <!-- Time: hidden by default, toggle to show -->
       <div v-if="showTimeField" class="space-y-1">
         <div class="flex items-center justify-between">
-          <label class="text-sm font-medium text-gray-700">Time</label>
+          <label class="text-sm font-medium text-gray-700 dark:text-slate-200">Time</label>
           <button @click="showTimeField = false" class="text-xs text-gray-400 hover:text-gray-600">Remove time</button>
         </div>
-        <input v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        <input v-model="changedAt" type="datetime-local" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
       </div>
       <button v-else @click="showTimeField = true; changedAt = dayjs().format('YYYY-MM-DDTHH:mm')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
         + Add time
@@ -131,19 +131,19 @@ watch(() => ui.diaperModalOpen, (open) => {
 
       <template v-if="showDetails">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Stool Color</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Stool Color</label>
           <div class="flex flex-wrap gap-2">
             <button v-for="c in colorOptions" :key="c.value" @click="stoolColor = stoolColor === c.value ? '' : c.value"
-              :class="['flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border-2 transition', stoolColor === c.value ? 'border-gray-800 bg-gray-100' : 'border-gray-200']">
+              :class="['flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border-2 transition', stoolColor === c.value ? 'border-gray-800 dark:border-white bg-gray-100 dark:bg-slate-700 dark:text-white' : 'border-gray-200 dark:border-slate-600 dark:text-slate-300']">
               <span :class="['w-3 h-3 rounded-full', c.dot]"></span>{{ c.label }}
             </button>
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Consistency</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Consistency</label>
           <div class="flex flex-wrap gap-2">
             <button v-for="c in consistencyOptions" :key="c.value" @click="consistency = consistency === c.value ? '' : c.value"
-              :class="['px-3 py-1.5 text-xs font-medium rounded-full border-2 transition', consistency === c.value ? 'border-amber-500 bg-amber-50 text-amber-700' : 'border-gray-200 text-gray-600']">
+              :class="['px-3 py-1.5 text-xs font-medium rounded-full border-2 transition', consistency === c.value ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'border-gray-200 dark:border-slate-600 text-gray-600 dark:text-slate-300']">
               {{ c.label }}
             </button>
           </div>
@@ -152,12 +152,12 @@ watch(() => ui.diaperModalOpen, (open) => {
 
       <label class="flex items-center gap-2.5 cursor-pointer">
         <input v-model="hasRash" type="checkbox" class="w-4 h-4 text-red-600 rounded border-gray-300" />
-        <span class="text-sm text-gray-700">Diaper rash present</span>
+        <span class="text-sm text-gray-700 dark:text-slate-200">Diaper rash present</span>
       </label>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Notes (optional)</label>
-        <input v-model="notes" type="text" placeholder="Any observations..." class="w-full px-3 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+        <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Notes (optional)</label>
+        <input v-model="notes" type="text" placeholder="Any observations..." class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
       </div>
 
       <BaseButton variant="primary" block :loading="loading" :disabled="!diaperType" @click="submit">
