@@ -247,7 +247,7 @@ onMounted(fetchEntries)
       </div>
     </template>
 
-    <EmptyState v-else icon="\u{1F4D6}" title="No diary entries yet" description="Capture the little moments, funny stories, and precious memories of your baby's journey.">
+    <EmptyState v-else icon="📖" title="No diary entries yet" description="Capture the little moments, funny stories, and precious memories of your baby's journey.">
       <BaseButton @click="openCreate"><PlusIcon class="w-4 h-4" /> Write First Entry</BaseButton>
     </EmptyState>
 
