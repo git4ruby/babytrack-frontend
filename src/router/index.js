@@ -79,6 +79,11 @@ const routes = [
         component: () => import('@/views/MilestonesView.vue'),
       },
       {
+        path: 'diary',
+        name: 'Diary',
+        component: () => import('@/views/DiaryView.vue'),
+      },
+      {
         path: 'weight',
         name: 'Weight',
         component: () => import('@/views/WeightView.vue'),
