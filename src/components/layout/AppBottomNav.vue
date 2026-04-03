@@ -32,7 +32,7 @@ function isActive(path) {
         :key="item.path"
         :to="item.path"
         :class="[
-          'flex flex-col items-center justify-center gap-0.5 py-3 px-2 min-w-0 flex-1 text-[11px] font-medium transition-colors',
+          'flex flex-col items-center justify-center gap-0.5 py-3 px-2 min-w-0 flex-1 min-h-[44px] text-[11px] font-medium transition-colors',
           isActive(item.path) ? 'text-blue-600' : 'text-gray-400'
         ]"
         style="-webkit-tap-highlight-color: transparent;"

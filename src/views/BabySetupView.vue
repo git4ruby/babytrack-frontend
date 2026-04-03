@@ -44,7 +44,7 @@ async function submit() {
         <p class="text-gray-500 dark:text-slate-400 mt-1">Let's set up your baby's profile to get started</p>
       </div>
 
-      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none p-8">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none p-5 sm:p-8">
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Baby's Name</label>

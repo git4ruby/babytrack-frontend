@@ -92,8 +92,8 @@ onMounted(fetchData)
               <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">User</th>
               <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Babies</th>
               <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">SMS</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Telegram</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400">Joined</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400 hidden sm:table-cell">Telegram</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-500 dark:text-slate-400 hidden md:table-cell">Joined</th>
               <th class="px-4 py-3"></th>
             </tr>
           </thead>
@@ -110,12 +110,12 @@ onMounted(fetchData)
                   {{ user.sms_enabled ? 'ON' : 'OFF' }}
                 </button>
               </td>
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 hidden sm:table-cell">
                 <span :class="['text-xs font-bold px-2 py-1 rounded-full', user.telegram_linked ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-400']">
                   {{ user.telegram_linked ? 'Linked' : 'No' }}
                 </span>
               </td>
-              <td class="px-4 py-3 text-xs text-gray-400 dark:text-slate-500">{{ new Date(user.created_at).toLocaleDateString() }}</td>
+              <td class="px-4 py-3 text-xs text-gray-400 dark:text-slate-500 hidden md:table-cell">{{ new Date(user.created_at).toLocaleDateString() }}</td>
               <td class="px-4 py-3 text-right">
                 <button v-if="user.id !== 1" @click="deleteUser(user)" class="p-1 text-gray-300 hover:text-red-500"><TrashIcon class="w-4 h-4" /></button>
               </td>

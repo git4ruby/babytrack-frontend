@@ -31,12 +31,12 @@ function defaultForm() {
 }
 
 const moods = [
-  { value: 'happy', label: 'Happy', icon: '\u{1F60A}', bg: 'bg-amber-50', border: 'border-amber-200', activeBg: 'bg-amber-100', activeBorder: 'border-amber-400', text: 'text-amber-700', darkBg: 'dark:bg-amber-900/30', darkActiveBg: 'dark:bg-amber-900/50', darkBorder: 'dark:border-amber-700', darkActiveBorder: 'dark:border-amber-500', darkText: 'dark:text-amber-300' },
-  { value: 'funny', label: 'Funny', icon: '\u{1F602}', bg: 'bg-yellow-50', border: 'border-yellow-200', activeBg: 'bg-yellow-100', activeBorder: 'border-yellow-400', text: 'text-yellow-700', darkBg: 'dark:bg-yellow-900/30', darkActiveBg: 'dark:bg-yellow-900/50', darkBorder: 'dark:border-yellow-700', darkActiveBorder: 'dark:border-yellow-500', darkText: 'dark:text-yellow-300' },
-  { value: 'sweet', label: 'Sweet', icon: '\u{1F970}', bg: 'bg-pink-50', border: 'border-pink-200', activeBg: 'bg-pink-100', activeBorder: 'border-pink-400', text: 'text-pink-700', darkBg: 'dark:bg-pink-900/30', darkActiveBg: 'dark:bg-pink-900/50', darkBorder: 'dark:border-pink-700', darkActiveBorder: 'dark:border-pink-500', darkText: 'dark:text-pink-300' },
-  { value: 'proud', label: 'Proud', icon: '\u{1F4AA}', bg: 'bg-blue-50', border: 'border-blue-200', activeBg: 'bg-blue-100', activeBorder: 'border-blue-400', text: 'text-blue-700', darkBg: 'dark:bg-blue-900/30', darkActiveBg: 'dark:bg-blue-900/50', darkBorder: 'dark:border-blue-700', darkActiveBorder: 'dark:border-blue-500', darkText: 'dark:text-blue-300' },
-  { value: 'sad', label: 'Sad', icon: '\u{1F622}', bg: 'bg-slate-50', border: 'border-slate-200', activeBg: 'bg-slate-100', activeBorder: 'border-slate-400', text: 'text-slate-700', darkBg: 'dark:bg-slate-700/50', darkActiveBg: 'dark:bg-slate-700', darkBorder: 'dark:border-slate-600', darkActiveBorder: 'dark:border-slate-400', darkText: 'dark:text-slate-300' },
-  { value: 'neutral', label: 'Note', icon: '\u{1F4DD}', bg: 'bg-gray-50', border: 'border-gray-200', activeBg: 'bg-gray-100', activeBorder: 'border-gray-400', text: 'text-gray-700', darkBg: 'dark:bg-gray-700/50', darkActiveBg: 'dark:bg-gray-700', darkBorder: 'dark:border-gray-600', darkActiveBorder: 'dark:border-gray-400', darkText: 'dark:text-gray-300' },
+  { value: 'happy', label: 'Happy', icon: '😊', bg: 'bg-amber-50', border: 'border-amber-200', activeBg: 'bg-amber-100', activeBorder: 'border-amber-400', text: 'text-amber-700', darkBg: 'dark:bg-amber-900/30', darkActiveBg: 'dark:bg-amber-900/50', darkBorder: 'dark:border-amber-700', darkActiveBorder: 'dark:border-amber-500', darkText: 'dark:text-amber-300' },
+  { value: 'funny', label: 'Funny', icon: '😂', bg: 'bg-yellow-50', border: 'border-yellow-200', activeBg: 'bg-yellow-100', activeBorder: 'border-yellow-400', text: 'text-yellow-700', darkBg: 'dark:bg-yellow-900/30', darkActiveBg: 'dark:bg-yellow-900/50', darkBorder: 'dark:border-yellow-700', darkActiveBorder: 'dark:border-yellow-500', darkText: 'dark:text-yellow-300' },
+  { value: 'sweet', label: 'Sweet', icon: '🥰', bg: 'bg-pink-50', border: 'border-pink-200', activeBg: 'bg-pink-100', activeBorder: 'border-pink-400', text: 'text-pink-700', darkBg: 'dark:bg-pink-900/30', darkActiveBg: 'dark:bg-pink-900/50', darkBorder: 'dark:border-pink-700', darkActiveBorder: 'dark:border-pink-500', darkText: 'dark:text-pink-300' },
+  { value: 'proud', label: 'Proud', icon: '💪', bg: 'bg-blue-50', border: 'border-blue-200', activeBg: 'bg-blue-100', activeBorder: 'border-blue-400', text: 'text-blue-700', darkBg: 'dark:bg-blue-900/30', darkActiveBg: 'dark:bg-blue-900/50', darkBorder: 'dark:border-blue-700', darkActiveBorder: 'dark:border-blue-500', darkText: 'dark:text-blue-300' },
+  { value: 'sad', label: 'Sad', icon: '😢', bg: 'bg-slate-50', border: 'border-slate-200', activeBg: 'bg-slate-100', activeBorder: 'border-slate-400', text: 'text-slate-700', darkBg: 'dark:bg-slate-700/50', darkActiveBg: 'dark:bg-slate-700', darkBorder: 'dark:border-slate-600', darkActiveBorder: 'dark:border-slate-400', darkText: 'dark:text-slate-300' },
+  { value: 'neutral', label: 'Note', icon: '📝', bg: 'bg-gray-50', border: 'border-gray-200', activeBg: 'bg-gray-100', activeBorder: 'border-gray-400', text: 'text-gray-700', darkBg: 'dark:bg-gray-700/50', darkActiveBg: 'dark:bg-gray-700', darkBorder: 'dark:border-gray-600', darkActiveBorder: 'dark:border-gray-400', darkText: 'dark:text-gray-300' },
 ]
 
 const moodMap = Object.fromEntries(moods.map(m => [m.value, m]))
@@ -206,7 +206,7 @@ onMounted(fetchEntries)
             :key="entry.id"
             class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group relative"
           >
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-3 sm:gap-4">
               <!-- Mood icon -->
               <div :class="[
                 'flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl border',
@@ -214,7 +214,7 @@ onMounted(fetchEntries)
                   ? `${moodMap[entry.mood].bg} ${moodMap[entry.mood].border} ${moodMap[entry.mood].darkBg} ${moodMap[entry.mood].darkBorder}`
                   : 'bg-gray-50 border-gray-100 dark:bg-slate-700 dark:border-slate-600'
               ]">
-                {{ moodMap[entry.mood]?.icon || '\u{1F4DD}' }}
+                {{ moodMap[entry.mood]?.icon || '📝' }}
               </div>
 
               <div class="flex-1 min-w-0">

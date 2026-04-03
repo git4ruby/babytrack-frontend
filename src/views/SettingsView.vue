@@ -402,7 +402,7 @@ async function handleDeleteBaby(baby) {
                 {{ phone.label ? phone.label[0].toUpperCase() : (i + 1) }}
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-mono font-medium text-gray-900 dark:text-white">{{ phone.number }}</p>
+                <p class="text-sm font-mono font-medium text-gray-900 dark:text-white break-all">{{ phone.number }}</p>
                 <p v-if="phone.label" class="text-xs text-gray-500 dark:text-slate-400">{{ phone.label }}</p>
               </div>
               <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
@@ -462,10 +462,10 @@ async function handleDeleteBaby(baby) {
           </div>
         </div>
         <div class="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
-          <span class="font-mono text-sm font-bold text-gray-900 dark:text-white dark:text-white">{{ emailAddress }}</span>
+          <span class="font-mono text-sm font-bold text-gray-900 dark:text-white break-all">{{ emailAddress }}</span>
           <span class="text-xs text-gray-400 dark:text-slate-500">No setup needed</span>
         </div>
-        <p class="text-xs text-gray-400 dark:text-slate-500 mt-2">Just send from the same email you signed up with: <strong>{{ auth.user?.email }}</strong></p>
+        <p class="text-xs text-gray-400 dark:text-slate-500 mt-2 break-all">Just send from the same email you signed up with: <strong>{{ auth.user?.email }}</strong></p>
       </div>
 
       <!-- Telegram Section -->

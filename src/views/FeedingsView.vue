@@ -133,7 +133,7 @@ onMounted(loadFeedings)
           :key="preset.value"
           @click="rangePreset = preset.value"
           :class="[
-            'px-3 py-1.5 text-sm font-medium rounded-lg transition-all',
+            'px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-all',
             rangePreset === preset.value
               ? 'bg-slate-900 dark:bg-slate-600 text-white shadow-md'
               : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'

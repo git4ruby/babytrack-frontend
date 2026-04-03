@@ -61,7 +61,7 @@ const sparkMax = computed(() => Math.max(...sparkData.value.map(d => d.ml), 1))
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Gap Timer — spans 2 cols -->
       <div :class="[
-        'lg:col-span-2 rounded-2xl p-7 text-white relative overflow-hidden min-h-[160px] flex flex-col justify-between',
+        'lg:col-span-2 rounded-2xl p-5 sm:p-7 text-white relative overflow-hidden min-h-[120px] sm:min-h-[160px] flex flex-col justify-between',
         urgency === 'alert'
           ? 'bg-gradient-to-br from-red-500 via-rose-500 to-pink-600'
           : urgency === 'warning'
@@ -108,7 +108,7 @@ const sparkMax = computed(() => Math.max(...sparkData.value.map(d => d.ml), 1))
     </div>
 
     <!-- Stats row -->
-    <div v-if="summary" class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+    <div v-if="summary" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-slate-700 text-center">
         <p class="text-4xl font-black text-slate-800 dark:text-white">{{ summary.total_feeds }}</p>
         <p class="text-xs font-medium text-slate-400 mt-1 uppercase tracking-wide">Feeds Today</p>

@@ -80,7 +80,7 @@ function switchMode() {
       </div>
 
       <!-- Login / Signup Card -->
-      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none p-8">
+      <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none p-5 sm:p-8">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-5">
           {{ mode === 'login' ? 'Welcome back' : 'Create your account' }}
         </h2>

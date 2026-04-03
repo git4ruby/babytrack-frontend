@@ -159,7 +159,7 @@ onMounted(() => {
     </div>
 
     <!-- Inventory summary -->
-    <div v-if="inventory" class="grid grid-cols-3 gap-3">
+    <div v-if="inventory" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
       <button
         v-for="(config, type) in storageConfig"
         :key="type"
@@ -233,7 +233,7 @@ onMounted(() => {
         </div>
 
         <!-- Actions -->
-        <div class="flex gap-2 mt-3">
+        <div class="flex flex-wrap gap-2 mt-3">
           <button
             @click="openAction(stash, 'consume')"
             class="flex-1 py-2 text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition"
@@ -390,7 +390,7 @@ onMounted(() => {
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-2">Storage Type</label>
-          <div class="grid grid-cols-3 gap-2">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
             <button v-for="opt in storageConfig" :key="opt" @click="editForm.storage_type = Object.entries(storageConfig).find(([k,v]) => v === opt)?.[0]"
               :class="['flex flex-col items-center gap-1 py-2 rounded-lg border-2 transition text-center text-xs',
                 editForm.storage_type === Object.entries(storageConfig).find(([k,v]) => v === opt)?.[0]
