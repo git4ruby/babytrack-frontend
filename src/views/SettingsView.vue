@@ -496,7 +496,7 @@ async function handleDeleteBaby(baby) {
             </button>
           </div>
           <p class="text-xs text-gray-400 dark:text-slate-500">Send messages to <strong>@LullaTrackBot</strong> on Telegram to log feeds, diapers, and more.</p>
-          <BaseButton variant="secondary" size="sm" :loading="telegramLinking" @click="linkTelegram">+ Link another family member</BaseButton>
+          <BaseButton v-if="isOwner" variant="secondary" size="sm" :loading="telegramLinking" @click="linkTelegram">+ Link another family member</BaseButton>
         </div>
 
         <div v-else class="space-y-3">
