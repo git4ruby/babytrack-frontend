@@ -268,7 +268,7 @@ async function handleDeleteBaby(baby) {
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Baby Profiles</h2>
-        <router-link to="/setup" class="text-sm text-blue-600 font-semibold hover:text-blue-700">+ Add Baby</router-link>
+        <router-link v-if="isOwner" to="/setup" class="text-sm text-blue-600 font-semibold hover:text-blue-700">+ Add Baby</router-link>
       </div>
       <div class="space-y-3">
         <div v-for="baby in babyStore.babies" :key="baby.id" class="flex items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-slate-700 group hover:border-blue-200 dark:hover:border-blue-700 transition">
