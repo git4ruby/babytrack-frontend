@@ -1,13 +1,16 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import client from '@/api/client'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 
-const mode = ref('login') // login or signup
+const inviteToken = ref(route.query.invite || '')
+const inviteBaby = ref('')
+const mode = ref(inviteToken.value ? 'signup' : 'login') // default to signup if invite
 const email = ref('')
 const password = ref('')
 const passwordConfirmation = ref('')
@@ -20,6 +23,7 @@ async function handleLogin() {
   loading.value = true
   try {
     await auth.signIn(email.value, password.value)
+    await acceptInviteIfPresent()
     router.push('/')
   } catch (e) {
     error.value = e.response?.status === 401
@@ -52,12 +56,22 @@ async function handleSignup() {
     })
     // Auto-login after signup
     await auth.signIn(email.value, password.value)
+    await acceptInviteIfPresent()
     router.push('/')
   } catch (e) {
     const errors = e.response?.data?.errors
     error.value = Array.isArray(errors) ? errors.join('. ') : 'Signup failed. Please try again.'
   } finally {
     loading.value = false
+  }
+}
+
+async function acceptInviteIfPresent() {
+  if (!inviteToken.value) return
+  try {
+    await client.post('/baby_shares/accept', { token: inviteToken.value })
+  } catch {
+    // Invite may already be accepted or invalid — proceed anyway
   }
 }
 
@@ -81,6 +95,9 @@ function switchMode() {
 
       <!-- Login / Signup Card -->
       <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl shadow-gray-200/50 dark:shadow-none p-5 sm:p-8">
+        <div v-if="inviteToken" class="bg-blue-50 dark:bg-blue-900/30 rounded-xl px-4 py-3 mb-5 text-center">
+          <p class="text-sm font-medium text-blue-700 dark:text-blue-300">You've been invited to track a baby! Sign up or sign in to accept.</p>
+        </div>
         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-5">
           {{ mode === 'login' ? 'Welcome back' : 'Create your account' }}
         </h2>
