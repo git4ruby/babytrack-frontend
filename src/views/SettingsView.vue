@@ -484,7 +484,7 @@ async function handleDeleteBaby(baby) {
         <div v-if="telegramLinked" class="space-y-3">
           <div v-for="acct in telegramAccounts" :key="acct.chat_id" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 dark:bg-slate-900 group">
             <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold flex-shrink-0">
-              {{ acct.label ? acct.label[1]?.toUpperCase() : 'T' }}
+              {{ acct.label ? acct.label[0]?.toUpperCase() : 'T' }}
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-gray-900 dark:text-white">{{ acct.label || 'Telegram User' }}</p>
