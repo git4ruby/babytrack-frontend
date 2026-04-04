@@ -107,6 +107,7 @@ function isActive(path) {
         </button>
       </div>
       <router-link
+        v-if="babyStore.babies.some(b => b.is_owner !== false)"
         to="/setup"
         class="flex items-center gap-2 px-3 py-2 mt-1 text-xs font-medium text-slate-500 hover:text-slate-300 rounded-lg hover:bg-white/5 transition"
       >
