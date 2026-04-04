@@ -17,6 +17,8 @@ const auth = useAuthStore()
 const babyStore = useBabyStore()
 const ui = useUiStore()
 
+const isOwner = computed(() => babyStore.baby?.is_owner !== false)
+
 const smsNumber = '+1 571 570 3445'
 const emailAddress = import.meta.env.VITE_INBOUND_EMAIL || 'babyfeedtracking@gmail.com'
 
@@ -276,10 +278,11 @@ async function handleDeleteBaby(baby) {
             <p class="text-sm text-gray-500 dark:text-slate-400">Born {{ dayjs(baby.date_of_birth).format('MMMM D, YYYY') }} · {{ baby.age_in_weeks }}w {{ baby.age_in_days % 7 }}d old</p>
             <p v-if="baby.birth_weight_grams" class="text-xs text-gray-400 dark:text-slate-500 dark:text-slate-500">Birth weight: {{ baby.birth_weight_grams }}g</p>
           </div>
-          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+          <div v-if="baby.is_owner !== false" class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
             <button @click="openEditBaby(baby)" class="p-2 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition"><PencilIcon class="w-4 h-4" /></button>
             <button @click="handleDeleteBaby(baby)" class="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition"><TrashIcon class="w-4 h-4" /></button>
           </div>
+          <span v-else class="text-xs px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full font-medium">Shared</span>
         </div>
       </div>
     </div>
@@ -293,8 +296,8 @@ async function handleDeleteBaby(baby) {
       <BaseButton size="sm" :loading="verifyLoading" @click="sendVerification">Send Verification</BaseButton>
     </div>
 
-    <!-- Baby Sharing -->
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
+    <!-- Baby Sharing (owner only) -->
+    <div v-if="isOwner" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-6">
       <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-1">Share Baby Access</h2>
       <p class="text-sm text-gray-500 dark:text-slate-400 mb-4">Invite family members to log data for your baby without sharing your login.</p>
 
