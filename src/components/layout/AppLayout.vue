@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useBabyStore } from '@/stores/baby'
 import { useUiStore } from '@/stores/ui'
@@ -12,12 +12,16 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import FeedEntryModal from '@/components/FeedEntryModal.vue'
 import MilkStashModal from '@/components/MilkStashModal.vue'
 import DiaperEntryModal from '@/components/DiaperEntryModal.vue'
+import TermsModal from '@/components/TermsModal.vue'
+import client from '@/api/client'
 
 const router = useRouter()
 const route = useRoute()
 const babyStore = useBabyStore()
 const ui = useUiStore()
 const { isOpen: confirmOpen, title: confirmTitle, message: confirmMessage, confirmLabel, variant: confirmVariant, handleConfirm, handleCancel } = useConfirm()
+
+const showTerms = ref(false)
 
 // Close mobile sidebar on navigation
 watch(() => route.path, () => {
@@ -29,7 +33,15 @@ onMounted(async () => {
   await babyStore.fetchBabies()
   if (!babyStore.hasBaby) {
     router.replace('/setup')
+    return
   }
+  // Check if user has accepted terms
+  try {
+    const { data } = await client.get('/profile')
+    if (!data.data?.terms_accepted) {
+      showTerms.value = true
+    }
+  } catch {}
 })
 </script>
 
@@ -72,6 +84,9 @@ onMounted(async () => {
     />
 
     <ToastContainer />
+
+    <!-- Terms acceptance modal -->
+    <TermsModal :open="showTerms" @accepted="showTerms = false" />
   </div>
 </template>
 
