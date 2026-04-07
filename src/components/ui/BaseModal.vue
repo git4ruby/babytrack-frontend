@@ -51,6 +51,11 @@ const emit = defineEmits(['close'])
             <div class="px-5 pb-5 overflow-y-auto flex-1">
               <slot />
             </div>
+
+            <!-- Footer (sticky at bottom, outside scroll) -->
+            <div v-if="$slots.footer" class="px-5 pb-5 pt-3 border-t border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 safe-bottom">
+              <slot name="footer" />
+            </div>
           </DialogPanel>
         </TransitionChild>
       </div>

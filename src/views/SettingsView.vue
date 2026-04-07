@@ -600,8 +600,10 @@ async function handleDeleteBaby(baby) {
           <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Notes</label>
           <input v-model="editBabyForm.notes" type="text" placeholder="Any notes..." class="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-gray-50 dark:bg-slate-700 dark:text-white focus:bg-white dark:focus:bg-slate-600" />
         </div>
-        <BaseButton variant="primary" block :loading="editBabyLoading" :disabled="!editBabyForm.name" @click="saveEditBaby">Save Changes</BaseButton>
       </div>
+      <template #footer>
+        <BaseButton variant="primary" block :loading="editBabyLoading" :disabled="!editBabyForm.name" @click="saveEditBaby">Save Changes</BaseButton>
+      </template>
     </BaseModal>
   </div>
 </template>
