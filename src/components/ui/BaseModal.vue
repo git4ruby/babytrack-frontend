@@ -13,7 +13,7 @@ const emit = defineEmits(['close'])
 
 <template>
   <TransitionRoot :show="open" as="template">
-    <Dialog @close="emit('close')" class="relative z-50">
+    <Dialog @close="emit('close')" class="relative" style="z-index: 10000;">
       <!-- Backdrop -->
       <TransitionChild
         enter="ease-out duration-200" enter-from="opacity-0" enter-to="opacity-100"
@@ -24,7 +24,7 @@ const emit = defineEmits(['close'])
 
       <!-- Panel -->
       <div class="fixed inset-0 overflow-y-auto">
-        <div class="flex min-h-full items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="flex min-h-full items-end sm:items-center justify-center pb-16 sm:pb-4 p-0 sm:p-4">
           <TransitionChild
             enter="ease-out duration-200"
             enter-from="opacity-0 translate-y-8 sm:translate-y-0 sm:scale-95"
