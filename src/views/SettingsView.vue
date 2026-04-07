@@ -278,7 +278,7 @@ async function handleDeleteBaby(baby) {
             <p class="text-sm text-gray-500 dark:text-slate-400">Born {{ dayjs(baby.date_of_birth).format('MMMM D, YYYY') }} · {{ baby.age_in_weeks }}w {{ baby.age_in_days % 7 }}d old</p>
             <p v-if="baby.birth_weight_grams" class="text-xs text-gray-400 dark:text-slate-500 dark:text-slate-500">Birth weight: {{ baby.birth_weight_grams }}g</p>
           </div>
-          <div v-if="baby.is_owner !== false" class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+          <div v-if="baby.is_owner !== false" class="flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
             <button @click="openEditBaby(baby)" class="p-2 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition"><PencilIcon class="w-4 h-4" /></button>
             <button @click="handleDeleteBaby(baby)" class="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition"><TrashIcon class="w-4 h-4" /></button>
           </div>
@@ -411,7 +411,7 @@ async function handleDeleteBaby(baby) {
               <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
               <button
                 @click="removeNumber(i)"
-                class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition"
+                class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg sm:opacity-0 sm:group-hover:opacity-100 transition"
                 title="Remove"
               >
                 <XMarkIcon class="w-4 h-4" />
@@ -491,7 +491,7 @@ async function handleDeleteBaby(baby) {
 
             </div>
             <span class="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full font-medium">Active</span>
-            <button @click="unlinkTelegram(acct.chat_id)" class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition">
+            <button @click="unlinkTelegram(acct.chat_id)" class="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg sm:opacity-0 sm:group-hover:opacity-100 transition">
               <XMarkIcon class="w-4 h-4" />
             </button>
           </div>

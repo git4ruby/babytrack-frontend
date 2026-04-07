@@ -211,7 +211,8 @@ onMounted(fetchMilestones)
           <div
             v-for="m in items"
             :key="m.id"
-            class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group relative"
+            @click="openEdit(m)"
+            class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group relative cursor-pointer hover:border-blue-200 dark:hover:border-blue-700 transition"
           >
             <div class="flex items-start gap-4">
               <div :class="[
@@ -236,11 +237,11 @@ onMounted(fetchMilestones)
               </div>
 
               <!-- Actions -->
-              <div class="flex-shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition">
-                <button @click="openEdit(m)" class="p-1.5 text-gray-300 hover:text-blue-500 rounded-lg hover:bg-blue-50 transition">
+              <div class="flex-shrink-0 flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
+                <button @click.stop="openEdit(m)" class="p-1.5 text-gray-300 hover:text-blue-500 rounded-lg hover:bg-blue-50 transition">
                   <PencilIcon class="w-4 h-4" />
                 </button>
-                <button @click="handleDelete(m.id)" class="p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50 transition">
+                <button @click.stop="handleDelete(m.id)" class="p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50 transition">
                   <TrashIcon class="w-4 h-4" />
                 </button>
               </div>
