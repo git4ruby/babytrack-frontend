@@ -217,7 +217,7 @@ onMounted(loadData)
             </div>
             <div class="flex-shrink-0 text-right">
               <p class="text-xs font-medium text-gray-400 dark:text-slate-500">{{ c.has_time ? dayjs(c.changed_at).format('h:mm A') : '' }}</p>
-              <div class="flex gap-1 mt-0.5 opacity-0 group-hover:opacity-100 transition">
+              <div class="flex gap-1 mt-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition">
                 <button @click="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
                   <PencilIcon class="w-3.5 h-3.5" />
                 </button>

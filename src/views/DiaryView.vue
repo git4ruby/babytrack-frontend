@@ -233,7 +233,7 @@ onMounted(fetchEntries)
               </div>
 
               <!-- Actions -->
-              <div class="flex-shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+              <div class="flex-shrink-0 flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
                 <button @click="openEdit(entry)" class="p-1.5 text-gray-300 hover:text-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition">
                   <PencilIcon class="w-4 h-4" />
                 </button>

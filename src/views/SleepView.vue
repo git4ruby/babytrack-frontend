@@ -211,7 +211,7 @@ onMounted(loadData)
               <span v-if="log.duration_minutes" class="text-sm font-bold px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400">
                 {{ log.duration_minutes }}m
               </span>
-              <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition">
+              <div class="flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
                 <button @click="openEdit(log)" class="p-0.5 text-gray-300 hover:text-blue-500"><PencilIcon class="w-3.5 h-3.5" /></button>
                 <button @click="handleDelete(log.id)" class="p-0.5 text-gray-300 hover:text-red-500"><TrashIcon class="w-3.5 h-3.5" /></button>
               </div>

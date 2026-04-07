@@ -221,7 +221,7 @@ onMounted(fetchLogs)
               <td class="px-4 py-3 text-gray-600 dark:text-slate-300 hidden sm:table-cell">{{ log.head_circumference_cm ? log.head_circumference_cm + ' cm' : '—' }}</td>
               <td class="px-4 py-3 text-gray-500 dark:text-slate-400 hidden md:table-cell">{{ log.measured_by || '—' }}</td>
               <td class="px-4 py-3 text-right">
-                <button @click="handleDelete(log.id)" class="text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition">
+                <button @click="handleDelete(log.id)" class="text-gray-300 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100 transition">
                   <TrashIcon class="w-4 h-4" />
                 </button>
               </td>
