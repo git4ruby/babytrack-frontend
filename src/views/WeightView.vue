@@ -3,13 +3,13 @@ import { ref, computed, onMounted } from 'vue'
 import dayjs from 'dayjs'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js'
-import { getWeightLogs, createWeightLog, deleteWeightLog, getPercentiles } from '@/api/weightLogs'
+import { getWeightLogs, createWeightLog, updateWeightLog, deleteWeightLog, getPercentiles } from '@/api/weightLogs'
 import { useBabyStore } from '@/stores/baby'
 import { useUiStore } from '@/stores/ui'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import { PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/vue/24/outline'
 import { useConfirm } from '@/composables/useConfirm'
 import ExportButton from '@/components/ui/ExportButton.vue'
 
@@ -24,6 +24,7 @@ const logs = ref([])
 const loading = ref(false)
 const showForm = ref(false)
 const formLoading = ref(false)
+const editingId = ref(null)
 const percentileData = ref(null)
 const currentPercentile = ref(null)
 
@@ -122,6 +123,25 @@ async function fetchLogs() {
   }
 }
 
+function openCreate() {
+  editingId.value = null
+  form.value = { recorded_at: dayjs().format('YYYY-MM-DD'), weight_grams: '', height_cm: '', head_circumference_cm: '', measured_by: '', notes: '' }
+  showForm.value = true
+}
+
+function openEdit(log) {
+  editingId.value = log.id
+  form.value = {
+    recorded_at: dayjs(log.recorded_at).format('YYYY-MM-DD'),
+    weight_grams: log.weight_grams || '',
+    height_cm: log.height_cm || '',
+    head_circumference_cm: log.head_circumference_cm || '',
+    measured_by: log.measured_by || '',
+    notes: log.notes || '',
+  }
+  showForm.value = true
+}
+
 async function submitWeight() {
   if (!form.value.weight_grams) return
   formLoading.value = true
@@ -134,10 +154,14 @@ async function submitWeight() {
       measured_by: form.value.measured_by || null,
       notes: form.value.notes || null,
     }
-    await createWeightLog(payload)
-    ui.showToast('Weight recorded')
+    if (editingId.value) {
+      await updateWeightLog(editingId.value, payload)
+      ui.showToast('Weight updated')
+    } else {
+      await createWeightLog(payload)
+      ui.showToast('Weight recorded')
+    }
     showForm.value = false
-    form.value = { recorded_at: dayjs().format('YYYY-MM-DD'), weight_grams: '', height_cm: '', head_circumference_cm: '', measured_by: '', notes: '' }
     fetchLogs()
   } catch (e) {
     ui.showToast(e.response?.data?.errors?.[0] || 'Failed to save', 'error')
@@ -163,7 +187,7 @@ onMounted(fetchLogs)
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white dark:text-white">Weight Log</h1>
       <div class="flex items-center gap-2">
         <ExportButton type="weight" />
-        <BaseButton @click="showForm = true">
+        <BaseButton @click="openCreate">
           <PlusIcon class="w-4 h-4" /> Add Measurement
         </BaseButton>
       </div>
@@ -214,16 +238,21 @@ onMounted(fetchLogs)
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50 dark:divide-slate-700">
-            <tr v-for="log in [...logs].sort((a,b) => new Date(b.recorded_at) - new Date(a.recorded_at))" :key="log.id" class="hover:bg-gray-50 dark:hover:bg-slate-700 group">
+            <tr v-for="log in [...logs].sort((a,b) => new Date(b.recorded_at) - new Date(a.recorded_at))" :key="log.id" @click="openEdit(log)" class="hover:bg-gray-50 dark:hover:bg-slate-700 group cursor-pointer">
               <td class="px-4 py-3 text-gray-900 dark:text-white">{{ dayjs(log.recorded_at).format('MMM D, YYYY') }}</td>
               <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ toDisplay(log.weight_grams) }}</td>
               <td class="px-4 py-3 text-gray-600 dark:text-slate-300 hidden sm:table-cell">{{ log.height_cm ? log.height_cm + ' cm' : '—' }}</td>
               <td class="px-4 py-3 text-gray-600 dark:text-slate-300 hidden sm:table-cell">{{ log.head_circumference_cm ? log.head_circumference_cm + ' cm' : '—' }}</td>
               <td class="px-4 py-3 text-gray-500 dark:text-slate-400 hidden md:table-cell">{{ log.measured_by || '—' }}</td>
-              <td class="px-4 py-3 text-right">
-                <button @click="handleDelete(log.id)" class="text-gray-300 hover:text-red-500 sm:opacity-0 sm:group-hover:opacity-100 transition">
-                  <TrashIcon class="w-4 h-4" />
-                </button>
+              <td class="px-4 py-3 text-right" @click.stop>
+                <div class="flex gap-1 justify-end sm:opacity-0 sm:group-hover:opacity-100 transition">
+                  <button @click="openEdit(log)" class="text-gray-300 hover:text-blue-500">
+                    <PencilIcon class="w-4 h-4" />
+                  </button>
+                  <button @click="handleDelete(log.id)" class="text-gray-300 hover:text-red-500">
+                    <TrashIcon class="w-4 h-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -236,7 +265,7 @@ onMounted(fetchLogs)
     </EmptyState>
 
     <!-- Add Weight Modal -->
-    <BaseModal :open="showForm" title="Add Weight Measurement" @close="showForm = false">
+    <BaseModal :open="showForm" :title="editingId ? 'Edit Weight Measurement' : 'Add Weight Measurement'" @close="showForm = false">
       <div class="space-y-4 mt-2">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Date</label>
@@ -262,7 +291,7 @@ onMounted(fetchLogs)
         </div>
       </div>
       <template #footer>
-        <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.weight_grams" @click="submitWeight">Save Measurement</BaseButton>
+        <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.weight_grams" @click="submitWeight">{{ editingId ? 'Update' : 'Save' }} Measurement</BaseButton>
       </template>
     </BaseModal>
   </div>

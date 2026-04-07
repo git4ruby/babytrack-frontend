@@ -189,7 +189,7 @@ onMounted(loadData)
           </div>
         </div>
         <div class="divide-y divide-gray-50 dark:divide-slate-700 px-4">
-          <div v-for="log in sleeps" :key="log.id" class="flex items-center gap-3 py-3 group">
+          <div v-for="log in sleeps" :key="log.id" @click="openEdit(log)" class="flex items-center gap-3 py-3 group cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 -mx-4 px-4 rounded-lg transition">
             <div :class="['flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-xl border',
               log.sleep_type === 'night' ? 'bg-slate-50 dark:bg-slate-700 border-slate-100 dark:border-slate-600' : 'bg-indigo-50 dark:bg-indigo-900/30 border-indigo-100 dark:border-indigo-800']">
               {{ typeConfig[log.sleep_type]?.icon || '💤' }}
@@ -212,8 +212,8 @@ onMounted(loadData)
                 {{ log.duration_minutes }}m
               </span>
               <div class="flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
-                <button @click="openEdit(log)" class="p-0.5 text-gray-300 hover:text-blue-500"><PencilIcon class="w-3.5 h-3.5" /></button>
-                <button @click="handleDelete(log.id)" class="p-0.5 text-gray-300 hover:text-red-500"><TrashIcon class="w-3.5 h-3.5" /></button>
+                <button @click.stop="openEdit(log)" class="p-0.5 text-gray-300 hover:text-blue-500"><PencilIcon class="w-3.5 h-3.5" /></button>
+                <button @click.stop="handleDelete(log.id)" class="p-0.5 text-gray-300 hover:text-red-500"><TrashIcon class="w-3.5 h-3.5" /></button>
               </div>
             </div>
           </div>

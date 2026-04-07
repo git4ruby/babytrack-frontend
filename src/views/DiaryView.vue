@@ -204,7 +204,8 @@ onMounted(fetchEntries)
           <div
             v-for="entry in items"
             :key="entry.id"
-            class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group relative"
+            @click="openEdit(entry)"
+            class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-5 group relative cursor-pointer hover:border-blue-200 dark:hover:border-blue-700 transition"
           >
             <div class="flex items-start gap-3 sm:gap-4">
               <!-- Mood icon -->
@@ -234,10 +235,10 @@ onMounted(fetchEntries)
 
               <!-- Actions -->
               <div class="flex-shrink-0 flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition">
-                <button @click="openEdit(entry)" class="p-1.5 text-gray-300 hover:text-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition">
+                <button @click.stop="openEdit(entry)" class="p-1.5 text-gray-300 hover:text-blue-500 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition">
                   <PencilIcon class="w-4 h-4" />
                 </button>
-                <button @click="handleDelete(entry.id)" class="p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition">
+                <button @click.stop="handleDelete(entry.id)" class="p-1.5 text-gray-300 hover:text-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition">
                   <TrashIcon class="w-4 h-4" />
                 </button>
               </div>

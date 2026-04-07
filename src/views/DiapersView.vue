@@ -189,7 +189,7 @@ onMounted(loadData)
           </div>
         </div>
         <div class="divide-y divide-gray-50 dark:divide-slate-700 px-4">
-          <div v-for="c in changes" :key="c.id" class="flex items-center gap-3 py-3 group">
+          <div v-for="c in changes" :key="c.id" @click="ui.openDiaperEdit(c)" class="flex items-center gap-3 py-3 group cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 -mx-4 px-4 rounded-lg transition">
             <div :class="[
               'flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-lg border',
               c.diaper_type === 'wet' ? 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800' :
@@ -218,10 +218,10 @@ onMounted(loadData)
             <div class="flex-shrink-0 text-right">
               <p class="text-xs font-medium text-gray-400 dark:text-slate-500">{{ c.has_time ? dayjs(c.changed_at).format('h:mm A') : '' }}</p>
               <div class="flex gap-1 mt-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition">
-                <button @click="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
+                <button @click.stop="ui.openDiaperEdit(c)" class="p-0.5 text-gray-300 hover:text-blue-500" title="Edit">
                   <PencilIcon class="w-3.5 h-3.5" />
                 </button>
-                <button @click="handleDelete(c.id)" class="p-0.5 text-gray-300 hover:text-red-500" title="Delete">
+                <button @click.stop="handleDelete(c.id)" class="p-0.5 text-gray-300 hover:text-red-500" title="Delete">
                   <TrashIcon class="w-3.5 h-3.5" />
                 </button>
               </div>
