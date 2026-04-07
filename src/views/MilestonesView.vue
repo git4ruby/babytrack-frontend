@@ -313,10 +313,12 @@ onMounted(fetchMilestones)
           </label>
         </div>
 
+      </div>
+      <template #footer>
         <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.title || !form.achieved_on" @click="submitForm">
           {{ editingId ? 'Update' : 'Add' }} Milestone
         </BaseButton>
-      </div>
+      </template>
     </BaseModal>
   </div>
 </template>

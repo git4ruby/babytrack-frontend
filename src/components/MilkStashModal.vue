@@ -130,7 +130,8 @@ async function submit() {
         />
       </div>
 
-      <!-- Submit -->
+    </div>
+    <template #footer>
       <BaseButton
         variant="primary"
         block
@@ -140,6 +141,6 @@ async function submit() {
       >
         Store Milk
       </BaseButton>
-    </div>
+    </template>
   </BaseModal>
 </template>

@@ -160,9 +160,11 @@ watch(() => ui.diaperModalOpen, (open) => {
         <input v-model="notes" type="text" placeholder="Any observations..." class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
       </div>
 
+    </div>
+    <template #footer>
       <BaseButton variant="primary" block :loading="loading" :disabled="!diaperType" @click="submit">
         {{ isEditing ? 'Update' : 'Log Diaper Change' }}
       </BaseButton>
-    </div>
+    </template>
   </BaseModal>
 </template>

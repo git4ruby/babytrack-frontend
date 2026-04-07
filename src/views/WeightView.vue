@@ -260,8 +260,10 @@ onMounted(fetchLogs)
           <label class="block text-sm font-medium text-gray-700 dark:text-slate-200 mb-1">Measured By</label>
           <input v-model="form.measured_by" type="text" placeholder="e.g. Pediatrician, Home scale" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
         </div>
-        <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.weight_grams" @click="submitWeight">Save Measurement</BaseButton>
       </div>
+      <template #footer>
+        <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.weight_grams" @click="submitWeight">Save Measurement</BaseButton>
+      </template>
     </BaseModal>
   </div>
 </template>

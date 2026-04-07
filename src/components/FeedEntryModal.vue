@@ -223,11 +223,11 @@ watch(() => ui.feedModalOpen, (open) => {
         </div>
       </div>
 
-      <div class="pt-2">
-        <BaseButton variant="primary" block :loading="loading" :disabled="!canSubmit" @click="submit">
-          {{ isEditing ? 'Update Feed' : 'Log Feed' }}
-        </BaseButton>
-      </div>
     </div>
+    <template #footer>
+      <BaseButton variant="primary" block :loading="loading" :disabled="!canSubmit" @click="submit">
+        {{ isEditing ? 'Update Feed' : 'Log Feed' }}
+      </BaseButton>
+    </template>
   </BaseModal>
 </template>

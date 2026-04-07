@@ -174,8 +174,10 @@ onMounted(fetchVaccinations)
             <input v-model="adminForm.site" type="text" placeholder="e.g. Left thigh" class="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm bg-white dark:bg-slate-700 dark:text-white" />
           </div>
         </div>
-        <BaseButton variant="primary" block :loading="adminLoading" @click="submitAdmin">Confirm Administration</BaseButton>
       </div>
+      <template #footer>
+        <BaseButton variant="primary" block :loading="adminLoading" @click="submitAdmin">Confirm Administration</BaseButton>
+      </template>
     </BaseModal>
   </div>
 </template>

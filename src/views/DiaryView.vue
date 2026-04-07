@@ -299,10 +299,12 @@ onMounted(fetchEntries)
           </label>
         </div>
 
+      </div>
+      <template #footer>
         <BaseButton variant="primary" block :loading="formLoading" :disabled="!form.content || !form.entry_date" @click="submitForm">
           {{ editingId ? 'Update' : 'Save' }} Entry
         </BaseButton>
-      </div>
+      </template>
     </BaseModal>
   </div>
 </template>
